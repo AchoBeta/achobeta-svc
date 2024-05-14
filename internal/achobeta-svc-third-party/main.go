@@ -3,6 +3,7 @@ package main
 import (
 	"achobeta-svc/internal/achobeta-svc-third-party/config"
 
+	"achobeta-svc/internal/achobeta-svc-third-party/inernal/logic"
 	"achobeta-svc/internal/achobeta-svc-third-party/inernal/router"
 	"flag"
 )
@@ -14,6 +15,7 @@ func main() {
 	// 初始化配置
 	config.InitConfig(*configPath)
 	config.InitLog(*logFilePath)
+	logic.NewService()
 	/** server 启动要放在最后*/
 	router.RunServer()
 }
