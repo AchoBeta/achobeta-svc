@@ -21,7 +21,7 @@ func init() {
 
 func Ping(ctx context.Context, c *app.RequestContext) {
 	r := web.NewResponse(c)
-	r.Success(nil)
+	r.Success("pong")
 }
 
 func Upload(ctx context.Context, c *app.RequestContext) {

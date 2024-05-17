@@ -18,8 +18,8 @@ type JsonMsgResult struct {
 }
 
 const SUCCESS_CODE = 200
-const SUCCESS_MSG = "成功"
-const ERROR_MSG = "错误"
+const SUCCESS_MSG = "success"
+const ERROR_MSG = "error"
 
 func NewResponse(c *app.RequestContext) *JsonMsgResponse {
 	return &JsonMsgResponse{Ctx: c}
@@ -29,7 +29,9 @@ func (r *JsonMsgResponse) Success(data interface{}) {
 	res := JsonMsgResult{}
 	res.Code = SUCCESS_CODE
 	res.Message = SUCCESS_MSG
-	res.Data = data
+	if data != nil {
+		res.Data = data
+	}
 	r.Ctx.JSON(http.StatusOK, res)
 }
 
