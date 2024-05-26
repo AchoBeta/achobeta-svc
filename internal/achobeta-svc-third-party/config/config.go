@@ -1,14 +1,14 @@
 package config
 
 import (
-	"sync"
+	"fmt"
 
 	"github.com/spf13/viper"
 )
 
 var (
 	config *Config
-	once   sync.Once
+	// once   sync.Once
 )
 
 type Config struct {
@@ -18,6 +18,21 @@ type Config struct {
 		SecretID  string `yaml:"secretId"`
 		SecretKey string `yaml:"secretKey"`
 	} `yaml:"txcloud"`
+	Database struct {
+		Mysql struct {
+			Host     string `yaml:"host"`
+			Port     int    `yaml:"port"`
+			Username string `yaml:"username"`
+			Password string `yaml:"password"`
+			Database string `yaml:"database"`
+		} `yaml:"mysql"`
+		redis struct {
+			Host     string `yaml:"host"`
+			Port     int    `yaml:"port"`
+			Password string `yaml:"password"`
+			Database int    `yaml:"database"`
+		} `yaml:"redis"`
+	} `yaml:"database"`
 }
 
 func InitConfig(FILE_PATH string) {
@@ -34,6 +49,7 @@ func InitConfig(FILE_PATH string) {
 	if err != nil {
 		panic(err.Error())
 	}
+	fmt.Printf("config: %+v", config)
 	// })
 }
 

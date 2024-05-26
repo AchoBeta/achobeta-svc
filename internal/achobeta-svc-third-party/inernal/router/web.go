@@ -4,27 +4,22 @@ import (
 	"achobeta-svc/internal/achobeta-svc-common/pkg/tlog"
 	"achobeta-svc/internal/achobeta-svc-third-party/config"
 	"achobeta-svc/internal/achobeta-svc-third-party/inernal/router/manager"
-	"context"
 	"fmt"
 
 	_ "achobeta-svc/internal/achobeta-svc-third-party/inernal/api"
 
-	"github.com/cloudwego/hertz/pkg/app/server"
+	"github.com/gin-gonic/gin"
 )
 
 func RunServer() {
-	h, err := listen()
+	c := config.Get()
+	g := gin.New()
+	// tlog.CtxInfof(context.Background(), "Listen on %s:%d", c.Host, c.Port)
+	manager.RouteHandler.Register(g)
+	// run 在最后
+	err := g.Run(fmt.Sprintf("%s:%d", c.Host, c.Port))
 	if err != nil {
 		tlog.Errorf("Listen error: %v", err)
-		panic(err.Error())
+		panic(err)
 	}
-	h.Spin()
-}
-
-func listen() (*server.Hertz, error) {
-	c := config.Get()
-	tlog.CtxInfof(context.Background(), "Listen on %s:%d", c.Host, c.Port)
-	h := server.Default(server.WithHostPorts(fmt.Sprintf("%s:%d", c.Host, c.Port)))
-	manager.RouteHandler.Register(h)
-	return h, nil
 }

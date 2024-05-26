@@ -16,6 +16,7 @@ func main() {
 	// 初始化配置
 	config.InitConfig(*configPath)
 	config.InitLog(*logFilePath)
+	config.InitDatabase()
 	// 初始化服务
 	utils.NewSnowflake()
 	logic.NewService()

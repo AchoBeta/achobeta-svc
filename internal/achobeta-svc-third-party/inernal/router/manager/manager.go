@@ -4,14 +4,11 @@ import (
 	"achobeta-svc/internal/achobeta-svc-common/pkg/tlog"
 	"fmt"
 
-	"github.com/cloudwego/hertz/pkg/app"
-	"github.com/cloudwego/hertz/pkg/app/server"
-	"github.com/cloudwego/hertz/pkg/route"
-	"github.com/hertz-contrib/requestid"
+	"github.com/gin-gonic/gin"
 )
 
-type PathHandler func(h *route.RouterGroup)
-type Middleware func() app.HandlerFunc
+type PathHandler func(h *gin.RouterGroup)
+type Middleware func() gin.HandlerFunc
 type RouteLevel int32
 type RouteManager struct {
 	Routes map[RouteLevel]*Route
@@ -55,12 +52,11 @@ func (rm *RouteManager) checkRoute(level RouteLevel) {
 	}
 }
 
-func (rm *RouteManager) Register(h *server.Hertz) {
+func (rm *RouteManager) Register(h *gin.Engine) {
 	routeCount, middlewareCount := 0, 0
 	for _, route := range rm.Routes {
 		v := h.Group(route.Url)
 		// 中间件注册
-		requestGlobalMiddleware(v)
 		for _, middleware := range route.Middlewares {
 			middlewareCount++
 			v.Use(middleware())
@@ -93,10 +89,4 @@ func (rm *RouteManager) RegisterMiddleware(level RouteLevel, middleware Middlewa
 		return
 	}
 	rm.Routes[level].Middlewares = append(rm.Routes[level].Middlewares, middleware)
-}
-
-// @title requestGlobalMiddleware
-// @description 注册全局中间件
-func requestGlobalMiddleware(v *route.RouterGroup) {
-	v.Use(requestid.New())
 }

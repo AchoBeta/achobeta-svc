@@ -7,26 +7,25 @@ import (
 	"achobeta-svc/internal/achobeta-svc-common/pkg/web"
 	"achobeta-svc/internal/achobeta-svc-third-party/inernal/router/manager"
 	"achobeta-svc/internal/achobeta-svc-third-party/inernal/service"
-	"context"
 
-	"github.com/cloudwego/hertz/pkg/app"
-	"github.com/cloudwego/hertz/pkg/route"
+	"github.com/gin-gonic/gin"
 )
 
 func init() {
-	manager.RouteHandler.RegisterRouter(manager.LEVEL_GLOBAL, func(r *route.RouterGroup) {
+	manager.RouteHandler.RegisterRouter(manager.LEVEL_GLOBAL, func(r *gin.RouterGroup) {
 		r.GET("/txcloud", Ping)
 		r.PUT("/txcloud/upload", Upload)
 	})
 }
 
-func Ping(ctx context.Context, c *app.RequestContext) {
+func Ping(c *gin.Context) {
 	r := web.NewResponse(c)
 	r.Success("pong")
 }
 
-func Upload(ctx context.Context, c *app.RequestContext) {
+func Upload(c *gin.Context) {
 	var err error
+	ctx := c.Request.Context()
 	r := web.NewResponse(c)
 	file, err := c.FormFile("file")
 	if err != nil {

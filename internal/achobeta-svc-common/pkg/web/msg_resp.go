@@ -4,33 +4,34 @@ import (
 	"achobeta-svc/internal/achobeta-svc-common/pkg/constant"
 	"net/http"
 
-	"github.com/cloudwego/hertz/pkg/app"
+	"github.com/gin-gonic/gin"
 )
 
 type JsonMsgResponse struct {
-	Ctx *app.RequestContext
+	Ctx *gin.Context
 }
 
-type JsonMsgResult struct {
-	Code    int
-	Message string
-	Data    interface{}
+func JsonMsgResult() map[string]interface{} {
+	return make(map[string]interface{})
 }
 
 const SUCCESS_CODE = 200
 const SUCCESS_MSG = "success"
 const ERROR_MSG = "error"
+const CODE = "code"
+const MESSAGE = "message"
+const DATA = "data"
 
-func NewResponse(c *app.RequestContext) *JsonMsgResponse {
+func NewResponse(c *gin.Context) *JsonMsgResponse {
 	return &JsonMsgResponse{Ctx: c}
 }
 
 func (r *JsonMsgResponse) Success(data interface{}) {
-	res := JsonMsgResult{}
-	res.Code = SUCCESS_CODE
-	res.Message = SUCCESS_MSG
+	res := JsonMsgResult()
+	res[CODE] = constant.SUCCESS.Code
+	res[MESSAGE] = constant.SUCCESS.Msg
 	if data != nil {
-		res.Data = data
+		res[DATA] = data
 	}
 	r.Ctx.JSON(http.StatusOK, res)
 }
@@ -44,11 +45,10 @@ func (r *JsonMsgResponse) ErrorMsg(mc constant.MsgCode, message string) {
 
 func (r *JsonMsgResponse) error(code int, message string) {
 	if message == "" {
-		message = ERROR_MSG
+		message = constant.COMMON_FAIL.Msg
 	}
-	res := JsonMsgResult{}
-	res.Code = code
-	res.Message = message
-	res.Data = nil
+	res := JsonMsgResult()
+	res[CODE] = code
+	res[MESSAGE] = message
 	r.Ctx.JSON(http.StatusOK, res)
 }
