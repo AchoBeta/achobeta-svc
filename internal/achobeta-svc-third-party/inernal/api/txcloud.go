@@ -3,6 +3,7 @@ package api
 import (
 	"achobeta-svc/internal/achobeta-svc-common/pkg/constant"
 	"achobeta-svc/internal/achobeta-svc-common/pkg/tlog"
+	"achobeta-svc/internal/achobeta-svc-common/pkg/utils"
 	"achobeta-svc/internal/achobeta-svc-common/pkg/web"
 	"achobeta-svc/internal/achobeta-svc-third-party/inernal/router/manager"
 	"achobeta-svc/internal/achobeta-svc-third-party/inernal/service"
@@ -33,7 +34,7 @@ func Upload(ctx context.Context, c *app.RequestContext) {
 		r.ErrorMsg(constant.COMMON_FAIL, err.Error())
 		return
 	}
-	fileName := file.Filename
+	fileName := utils.GetSnowflakeUUID()
 	f, err := file.Open()
 	if err != nil {
 		tlog.CtxErrorf(ctx, "open file error: %v", err)
@@ -41,9 +42,7 @@ func Upload(ctx context.Context, c *app.RequestContext) {
 		return
 	}
 	defer f.Close()
-	tlog.Infof("upload file: %s", fileName)
-	err = service.PutObject(f, fileName)
-	if err != nil {
+	if err = service.PutObject(f, fileName); err != nil {
 		tlog.CtxErrorf(ctx, "put object error: %v", err)
 		r.ErrorMsg(constant.COMMON_FAIL, err.Error())
 		return

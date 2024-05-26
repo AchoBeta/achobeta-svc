@@ -31,8 +31,9 @@ func New() {
 	}
 }
 
-func PutObject(file io.Reader, fileName string) error {
-	_, err := c.Object.Put(context.Background(), fileName, file, nil)
+func PutObject(object io.Reader, objectName string) error {
+	tlog.Infof("put object : %s", objectName)
+	_, err := c.Object.Put(context.Background(), objectName, object, nil)
 	if err != nil {
 		tlog.CtxErrorf(context.Background(), "put object error: %v", err)
 		return err

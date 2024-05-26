@@ -1,5 +1,18 @@
-host: 127.0.0.1
-port: 4399
-txcloud: 
+txcloud:
+  # 腾讯云secretId
   secretId: ""
   secretKey: ""
+host: 127.0.0.1
+port: 4399
+db: 
+  mysql:
+    host:
+    port:
+    username:
+    password:
+    database:
+  redis:
+    host:
+    port:
+    password:
+    db:
