@@ -1,4 +1,4 @@
-package service
+package txcloud
 
 import (
 	"achobeta-svc/internal/achobeta-svc-common/pkg/tlog"

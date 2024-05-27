@@ -8,5 +8,6 @@ import (
 
 func Login(c *gin.Context) {
 	r := web.NewResponse(c)
+
 	r.Success(nil)
 }

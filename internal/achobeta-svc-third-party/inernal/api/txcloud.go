@@ -6,7 +6,7 @@ import (
 	"achobeta-svc/internal/achobeta-svc-common/pkg/utils"
 	"achobeta-svc/internal/achobeta-svc-common/pkg/web"
 	"achobeta-svc/internal/achobeta-svc-third-party/inernal/router/manager"
-	"achobeta-svc/internal/achobeta-svc-third-party/inernal/service"
+	"achobeta-svc/internal/achobeta-svc-third-party/inernal/service/txcloud"
 
 	"github.com/gin-gonic/gin"
 )
@@ -20,7 +20,9 @@ func init() {
 
 func Ping(c *gin.Context) {
 	r := web.NewResponse(c)
-	r.Success("pong")
+	tlog.CtxInfof(c.Request.Context(), "ctx test log zzz...")
+	tlog.Infof("test log zzz...")
+	r.Success(nil)
 }
 
 func Upload(c *gin.Context) {
@@ -41,7 +43,7 @@ func Upload(c *gin.Context) {
 		return
 	}
 	defer f.Close()
-	if err = service.PutObject(f, fileName); err != nil {
+	if err = txcloud.PutObject(f, fileName); err != nil {
 		tlog.CtxErrorf(ctx, "put object error: %v", err)
 		r.ErrorMsg(constant.COMMON_FAIL, err.Error())
 		return

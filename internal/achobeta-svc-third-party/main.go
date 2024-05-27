@@ -4,8 +4,8 @@ import (
 	"achobeta-svc/internal/achobeta-svc-common/pkg/utils"
 	"achobeta-svc/internal/achobeta-svc-third-party/config"
 
-	"achobeta-svc/internal/achobeta-svc-third-party/inernal/logic"
 	"achobeta-svc/internal/achobeta-svc-third-party/inernal/router"
+	"achobeta-svc/internal/achobeta-svc-third-party/inernal/service"
 	"flag"
 )
 
@@ -19,7 +19,7 @@ func main() {
 	config.InitDatabase()
 	// 初始化服务
 	utils.NewSnowflake()
-	logic.NewService()
+	service.LoadService()
 	/** server 启动要放在最后*/
 	router.RunServer()
 }
