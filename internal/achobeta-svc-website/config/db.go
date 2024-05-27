@@ -6,6 +6,7 @@ import (
 
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
+	"gorm.io/gorm/schema"
 )
 
 var (
@@ -21,11 +22,18 @@ func InitDatabase() {
 		mysql.Config{
 			DSN: dsn,
 		},
-	), &gorm.Config{})
+	), &gorm.Config{
+		DisableAutomaticPing: true,
+		NamingStrategy: schema.NamingStrategy{
+			TablePrefix:   "ab_",
+			SingularTable: true,
+		},
+	})
 	if err != nil {
 		tlog.Errorf("connect mysql error: %s", err.Error())
 		panic(err)
 	}
+	tlog.Infof("connect mysql success!")
 }
 
 func GetMysql() *gorm.DB {
