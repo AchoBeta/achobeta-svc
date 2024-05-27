@@ -5,14 +5,14 @@ import (
 	"achobeta-svc/internal/achobeta-svc-common/pkg/tlog"
 	"achobeta-svc/internal/achobeta-svc-common/pkg/utils"
 	"achobeta-svc/internal/achobeta-svc-common/pkg/web"
-	"achobeta-svc/internal/achobeta-svc-third-party/inernal/router/manager"
+
 	"achobeta-svc/internal/achobeta-svc-third-party/inernal/service/txcloud"
 
 	"github.com/gin-gonic/gin"
 )
 
 func init() {
-	manager.RouteHandler.RegisterRouter(manager.LEVEL_GLOBAL, func(r *gin.RouterGroup) {
+	web.RouteHandler.RegisterRouter(web.LEVEL_GLOBAL, func(r *gin.RouterGroup) {
 		r.GET("/txcloud", Ping)
 		r.PUT("/txcloud/upload", Upload)
 	})

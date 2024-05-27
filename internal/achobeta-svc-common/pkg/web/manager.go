@@ -1,4 +1,4 @@
-package manager
+package web
 
 import (
 	"achobeta-svc/internal/achobeta-svc-common/pkg/tlog"

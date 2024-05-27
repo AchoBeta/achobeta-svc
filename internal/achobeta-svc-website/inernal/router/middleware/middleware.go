@@ -2,7 +2,7 @@ package middleware
 
 import (
 	"achobeta-svc/internal/achobeta-svc-common/pkg/tlog"
-	"achobeta-svc/internal/achobeta-svc-third-party/inernal/router/manager"
+	"achobeta-svc/internal/achobeta-svc-common/pkg/web"
 
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
@@ -10,7 +10,7 @@ import (
 )
 
 func init() {
-	manager.RouteHandler.RegisterMiddleware(manager.LEVEL_GLOBAL, AddTraceId, false)
+	web.RouteHandler.RegisterMiddleware(web.LEVEL_GLOBAL, AddTraceId, false)
 }
 
 func AddTraceId() gin.HandlerFunc {
