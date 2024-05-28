@@ -35,22 +35,6 @@ var (
 	CAPTCHA_ERROR              = MsgCode{2100, "验证码错误"}
 	INSUFFICENT_PERMISSIONS    = MsgCode{2200, "权限不足"}
 
-	/* 镜像错误 3000 ~ 3999 */
-	IMAGE_NOT_FIND    = MsgCode{3001, "镜像未找到"}
-	IMAGE_CREATE_FAIL = MsgCode{3002, "镜像构建失败"}
-	IMAGE_PULL_FAIL   = MsgCode{3003, "镜像拉取失败"}
-	IMAGE_PUSH_FAIL   = MsgCode{3004, "镜像上传失败"}
-	IMAGE_REMOVE_FAIL = MsgCode{3005, "镜像删除失败"}
-
-	/* 容器错误 4000 ~ 4999 */
-	CONTAINER_NOT_FOUND    = MsgCode{4001, "容器未找到"}
-	CONTAINER_CREATE_FAIL  = MsgCode{4002, "容器创建失败"}
-	CONTAINER_START_FAIL   = MsgCode{4003, "容器启动失败"}
-	CONTAINER_STOP_FAIL    = MsgCode{4004, "容器停止失败"}
-	CONTAINER_RESTART_FAIL = MsgCode{4005, "容器重启失败"}
-	CONTAINER_REMOVE_FAIL  = MsgCode{4006, "容器删除失败"}
-	CONTAINER_IS_DESTORY   = MsgCode{4007, "容器已销毁"}
-
 	/*
 	 USER_NOT_LOGIN(2001, "用户未登录"),
 	 USER_ACCOUNT_EXPIRED(2002, "账号已过期"),
