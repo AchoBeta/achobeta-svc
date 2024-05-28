@@ -3,10 +3,13 @@ package config
 import (
 	"achobeta-svc/internal/achobeta-svc-common/pkg/tlog"
 	"fmt"
+	"log"
+	"os"
+	"time"
 
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
-	"gorm.io/gorm/schema"
+	"gorm.io/gorm/logger"
 )
 
 var (
@@ -24,10 +27,14 @@ func InitDatabase() {
 		},
 	), &gorm.Config{
 		DisableAutomaticPing: true,
-		NamingStrategy: schema.NamingStrategy{
-			TablePrefix:   "ab_",
-			SingularTable: true,
-		},
+		Logger: logger.New(log.New(os.Stdout, "\r\n", log.LstdFlags), // io writer
+			logger.Config{
+				SlowThreshold:             time.Second,   // Slow SQL threshold
+				LogLevel:                  logger.Silent, // Log level
+				IgnoreRecordNotFoundError: true,          // Ignore ErrRecordNotFound error for logger
+				ParameterizedQueries:      true,          // Don't include params in the SQL log
+				Colorful:                  false,         // Disable color
+			}),
 	})
 	if err != nil {
 		tlog.Errorf("connect mysql error: %s", err.Error())

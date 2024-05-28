@@ -6,6 +6,10 @@ type User struct {
 	Username string
 	Password string
 	Phone    string
-	Email    *string `gorm:"not null"`
+	Email    string `gorm:"not null"`
 	gorm.Model
+}
+
+func (*User) TableName() string {
+	return "ab_user"
 }
