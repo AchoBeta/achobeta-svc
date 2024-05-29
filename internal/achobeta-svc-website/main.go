@@ -17,6 +17,7 @@ func main() {
 	config.InitConfig(*configPath)
 	config.InitLog(*logFilePath)
 	config.InitDatabase()
+	config.InitRedis()
 	// 初始化服务
 	utils.NewSnowflake()
 	// service.LoadService()

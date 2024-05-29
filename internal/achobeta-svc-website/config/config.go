@@ -12,10 +12,6 @@ var (
 type Config struct {
 	Host    string `yaml:"host"`
 	Port    int    `yaml:"port"`
-	Txcloud struct {
-		SecretID  string `yaml:"secretId"`
-		SecretKey string `yaml:"secretKey"`
-	} `yaml:"txcloud"`
 	Database struct {
 		Mysql struct {
 			Host     string `yaml:"host"`
@@ -24,7 +20,7 @@ type Config struct {
 			Password string `yaml:"password"`
 			Database string `yaml:"database"`
 		} `yaml:"mysql"`
-		redis struct {
+		Redis struct {
 			Host     string `yaml:"host"`
 			Port     int    `yaml:"port"`
 			Password string `yaml:"password"`
