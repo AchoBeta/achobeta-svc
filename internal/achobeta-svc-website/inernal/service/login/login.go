@@ -13,6 +13,7 @@ import (
     "time"
 )
 
+// Login 登录接口, 返回token 有效期30分钟
 func Login(ctx context.Context, req *entity.LoginRequest) (string, error) {
 	// 查询用户
 //	tlog.CtxInfof(ctx, "2222 login, username:[%s], email:[%s], phone:[%s]", req.Username, req.Email, req.Phone)
@@ -30,6 +31,7 @@ func Login(ctx context.Context, req *entity.LoginRequest) (string, error) {
 		tlog.CtxErrorf(ctx, "password error")
 		return "", err
 	}
+	// 生成token 并缓存到redis
 	token, err := createToken(u)
 	if err != nil {
 		tlog.CtxErrorf(ctx, "set token into redis error, msg:%s", err.Error())
