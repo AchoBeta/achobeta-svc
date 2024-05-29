@@ -14,6 +14,8 @@ var (
 
 	/* 请求错误 <0 */
 	TOKEN_IS_EXPIRED = MsgCode{-2, "token已过期"}
+	TOKEN_IS_INVALID = MsgCode{-3, "token无效"}
+	TOKEN_IS_NULL    = MsgCode{-4, "token为空"}
 
 	/* 内部错误 600 ~ 999 */
 	INTERNAL_ERROR             = MsgCode{601, "内部错误, check log"}

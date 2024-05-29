@@ -34,8 +34,12 @@ var (
 	}
 )
 
+func urlLevel(level RouteLevel) string {
+	return fmt.Sprintf("v%d", level)
+}
+
 func buildUrl(level RouteLevel) string {
-	return fmt.Sprintf("/api/v%d", level)
+	return fmt.Sprintf("/api/%s", urlLevel(level))
 }
 
 func NewRoute(level RouteLevel) *Route {
@@ -79,11 +83,12 @@ func (rm *RouteManager) RegisterRouter(level RouteLevel, router PathHandler) {
 // @description 注册中间件
 // @param level RouteLevel 路由级别
 // @param middleware Middleware 中间件
-// @param iteration bool 是否迭代, 即 v3 等级的中间件会同时注册到 v2, v1, v0 等级 (向下兼容)
+// @param iteration bool 是否迭代, 即 v0 等级的中间件会同时注册到 v3, v2, v1 等级 (v3 级别最高, 范围最小)
 func (rm *RouteManager) RegisterMiddleware(level RouteLevel, middleware Middleware, iteration bool) {
 	rm.checkRoute(level)
 	if iteration {
-		for e := level; e >= 0; e-- {
+		for e := level; e <= 3; e++ {
+			rm.checkRoute(e)
 			rm.Routes[e].Middlewares = append(rm.Routes[e].Middlewares, middleware)
 		}
 		return
