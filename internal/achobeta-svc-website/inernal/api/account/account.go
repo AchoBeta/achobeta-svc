@@ -7,6 +7,7 @@ import (
 	"achobeta-svc/internal/achobeta-svc-common/pkg/web"
 	"achobeta-svc/internal/achobeta-svc-website/inernal/entity"
 	"achobeta-svc/internal/achobeta-svc-website/inernal/service/account"
+	"achobeta-svc/internal/achobeta-svc-website/inernal/service/user"
 	"fmt"
 
 	"github.com/gin-gonic/gin"
@@ -45,24 +46,26 @@ func QuerySelf(c *gin.Context) {
 
 func Create(c *gin.Context) {
 	r := web.NewResponse(c)
-	ue := &entity.Account{}
-	if err := c.ShouldBindJSON(ue); err != nil {
+	acct := &entity.Account{}
+	if err := c.ShouldBindJSON(acct); err != nil {
 		tlog.CtxErrorf(c.Request.Context(), "decode account error: %v", err)
 		c.Error(err)
 		return
 	}
-	ue = &entity.Account{
-		Username: ue.Username,
-		Password: hashPassword(ue.Password),
-		Email:    ue.Email,
-		Phone:    ue.Phone,
+	userId, err := user.Create(c.Request.Context(), entity.MockUser())
+	if err != nil {
+		tlog.CtxErrorf(c.Request.Context(), "create user error: %v", err)
+		c.Error(err)
+		return
 	}
-	if err := account.CreateAccount(c.Request.Context(), ue); err != nil {
+	acct.UserId = userId
+	acct.Password = hashPassword(acct.Password)
+	if err := account.CreateAccount(c.Request.Context(), acct); err != nil {
 		tlog.CtxErrorf(c.Request.Context(), "create account error: %v", err)
 		c.Error(err)
 		return
 	}
-	r.Success(nil)
+	r.Success(acct.ID)
 }
 
 func hashPassword(pwd string) string {
