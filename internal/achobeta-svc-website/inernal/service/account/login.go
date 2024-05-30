@@ -1,11 +1,11 @@
-package login
+package account
 
 import (
 	"achobeta-svc/internal/achobeta-svc-common/pkg/tlog"
 	"achobeta-svc/internal/achobeta-svc-common/pkg/utils"
 	"achobeta-svc/internal/achobeta-svc-website/config"
 	"achobeta-svc/internal/achobeta-svc-website/inernal/entity"
-	"achobeta-svc/internal/achobeta-svc-website/inernal/service/user"
+
 	"context"
 	"encoding/base64"
 
@@ -15,14 +15,13 @@ import (
 // Login 登录接口, 返回token 有效期30分钟
 func Login(ctx context.Context, req *entity.LoginRequest) (string, error) {
 	// 查询用户
-	//	tlog.CtxInfof(ctx, "2222 login, username:[%s], email:[%s], phone:[%s]", req.Username, req.Email, req.Phone)
-	u, err := user.QueryUser(ctx, &entity.User{
+	u, err := QueryAccount(ctx, &entity.Account{
 		Username: req.Username,
 		Email:    req.Email,
 		Phone:    req.Phone,
 	})
 	if err != nil {
-		tlog.CtxErrorf(ctx, "query user error: %v", err)
+		tlog.CtxErrorf(ctx, "query account error: %v", err)
 		return "", err
 	}
 	// 密码校验
@@ -39,13 +38,19 @@ func Login(ctx context.Context, req *entity.LoginRequest) (string, error) {
 	return token, nil
 }
 
-func createToken(user *entity.User) (string, error) {
+func createToken(account *entity.Account) (string, error) {
 	var err error
 	token := base64.StdEncoding.EncodeToString([]byte(utils.GetSnowflakeUUID()))
 	// 过期时间30分钟
-	err = config.GetRedis().Set(token, user.ID, 30*time.Minute).Err()
+	err = config.GetRedis().Set(token, account.ID, 30*time.Minute).Err()
 	if err != nil {
 		return "", err
 	}
 	return token, nil
+}
+
+// Logout 登出接口
+func Logout(ctx context.Context, token string) error {
+	tlog.CtxInfof(ctx, "logout, token:[%s]", token)
+	return config.GetRedis().Del(token).Err()
 }

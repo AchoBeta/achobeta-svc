@@ -1,4 +1,4 @@
-package user
+package account
 
 import (
 	"achobeta-svc/internal/achobeta-svc-common/pkg/constant"
@@ -6,7 +6,7 @@ import (
 	"achobeta-svc/internal/achobeta-svc-common/pkg/utils"
 	"achobeta-svc/internal/achobeta-svc-common/pkg/web"
 	"achobeta-svc/internal/achobeta-svc-website/inernal/entity"
-	"achobeta-svc/internal/achobeta-svc-website/inernal/service/user"
+	"achobeta-svc/internal/achobeta-svc-website/inernal/service/account"
 	"fmt"
 
 	"github.com/gin-gonic/gin"
@@ -15,28 +15,28 @@ import (
 
 func init() {
 	web.RouteHandler.RegisterRouter(web.LEVEL_GLOBAL, func(h *gin.RouterGroup) {
-		h.POST("/user", Create)
+		h.POST("/account", Create)
 	})
 	web.RouteHandler.RegisterRouter(web.LEVEL_V1, func(h *gin.RouterGroup) {
-		h.GET("/user", Query)
-		h.GET("/user/self", QuerySelf)
+		h.GET("/account", Query)
+		h.GET("/account/self", QuerySelf)
 	})
 }
 
 func QuerySelf(c *gin.Context) {
 	r := web.NewResponse(c)
-	id, ok := c.Request.Context().Value((constant.RequestHeaderKeyUserId)).(uint)
+	id, ok := c.Request.Context().Value((constant.RequestHeaderKeyAccountId)).(uint)
 	if !ok {
-		c.Error(fmt.Errorf("failed to retrieve user id from context"))
+		c.Error(fmt.Errorf("failed to retrieve account id from context"))
 		return
 	}
-	ue, err := user.QueryUser(c.Request.Context(), &entity.User{
+	ue, err := account.QueryAccount(c.Request.Context(), &entity.Account{
 		Model: gorm.Model{
 			ID: id,
 		},
 	})
 	if err != nil {
-		tlog.CtxErrorf(c.Request.Context(), "query user error: %v", err)
+		tlog.CtxErrorf(c.Request.Context(), "query account error: %v", err)
 		c.Error(err)
 		return
 	}
@@ -45,21 +45,20 @@ func QuerySelf(c *gin.Context) {
 
 func Create(c *gin.Context) {
 	r := web.NewResponse(c)
-	// ue := entity.MockUser()
-	ue := &entity.User{}
+	ue := &entity.Account{}
 	if err := c.ShouldBindJSON(ue); err != nil {
-		tlog.CtxErrorf(c.Request.Context(), "decode user error: %v", err)
+		tlog.CtxErrorf(c.Request.Context(), "decode account error: %v", err)
 		c.Error(err)
 		return
 	}
-	ue = &entity.User{
+	ue = &entity.Account{
 		Username: ue.Username,
 		Password: hashPassword(ue.Password),
 		Email:    ue.Email,
 		Phone:    ue.Phone,
 	}
-	if err := user.CreateUser(c.Request.Context(), ue); err != nil {
-		tlog.CtxErrorf(c.Request.Context(), "create user error: %v", err)
+	if err := account.CreateAccount(c.Request.Context(), ue); err != nil {
+		tlog.CtxErrorf(c.Request.Context(), "create account error: %v", err)
 		c.Error(err)
 		return
 	}
@@ -77,15 +76,15 @@ func hashPassword(pwd string) string {
 
 func Query(c *gin.Context) {
 	r := web.NewResponse(c)
-	u := &entity.User{}
+	u := &entity.Account{}
 	if err := c.ShouldBindJSON(u); err != nil {
-		tlog.CtxErrorf(c.Request.Context(), "decode user error: %v", err)
+		tlog.CtxErrorf(c.Request.Context(), "decode account error: %v", err)
 		c.Error(err)
 		return
 	}
-	ue, err := user.QueryUser(c.Request.Context(), u)
+	ue, err := account.QueryAccount(c.Request.Context(), u)
 	if err != nil {
-		tlog.CtxErrorf(c.Request.Context(), "query user error: %v", err)
+		tlog.CtxErrorf(c.Request.Context(), "query account error: %v", err)
 		c.Error(err)
 		return
 	}

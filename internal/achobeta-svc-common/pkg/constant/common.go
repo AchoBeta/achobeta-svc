@@ -3,4 +3,4 @@ package constant
 type RequestHeaderKey string
 
 const RequestHeaderKeyToken RequestHeaderKey = "X-Token"
-const RequestHeaderKeyUserId RequestHeaderKey = "X-User-Id"
+const RequestHeaderKeyAccountId RequestHeaderKey = "X-Account-Id"

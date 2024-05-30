@@ -3,10 +3,10 @@ package entity
 import "gorm.io/gorm"
 
 type User struct {
-	Username string
-	Password string
-	Phone    string
-	Email    string `gorm:"not null"`
+	Name         string `json:"name"`
+	Gender       int8   `json:"gender"` // 性别 0:未知 1:男 2:女
+	Avatar       string `json:"avatar"`
+	Introduction string `json:"introduction"`
 	gorm.Model
 }
 

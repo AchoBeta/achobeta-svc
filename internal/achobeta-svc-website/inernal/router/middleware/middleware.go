@@ -6,6 +6,7 @@ import (
 	"achobeta-svc/internal/achobeta-svc-common/pkg/web"
 	"achobeta-svc/internal/achobeta-svc-website/config"
 	"context"
+	"fmt"
 
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
@@ -53,17 +54,13 @@ func CheckToken() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		token := c.GetHeader(string(constant.RequestHeaderKeyToken))
 		if token == "" {
-			r := web.NewResponse(c)
-			r.ErrorCode(constant.TOKEN_IS_NULL)
-			c.Abort()
+			c.AbortWithError(constant.TOKEN_IS_NULL.Code, fmt.Errorf(constant.TOKEN_IS_NULL.Msg))
 		}
-		userId, err := config.GetRedis().Get(token).Int()
+		accountId, err := config.GetRedis().Get(token).Int()
 		if err != nil {
-			r := web.NewResponse(c)
-			r.ErrorCode(constant.TOKEN_IS_INVALID)
-			c.Abort()
+			c.AbortWithError(constant.TOKEN_IS_INVALID.Code, fmt.Errorf(constant.TOKEN_IS_INVALID.Msg))
 		}
-		c.Request = c.Request.WithContext(context.WithValue(c.Request.Context(), constant.RequestHeaderKeyUserId, uint(userId)))
+		c.Request = c.Request.WithContext(context.WithValue(c.Request.Context(), constant.RequestHeaderKeyAccountId, uint(accountId)))
 		c.Next()
 	}
 }

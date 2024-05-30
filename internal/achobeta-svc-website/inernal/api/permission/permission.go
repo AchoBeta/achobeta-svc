@@ -5,7 +5,7 @@ import (
 	"achobeta-svc/internal/achobeta-svc-common/pkg/tlog"
 	"achobeta-svc/internal/achobeta-svc-common/pkg/web"
 	"achobeta-svc/internal/achobeta-svc-website/inernal/entity"
-	"achobeta-svc/internal/achobeta-svc-website/inernal/service/login"
+	"achobeta-svc/internal/achobeta-svc-website/inernal/service/account"
 
 	"github.com/gin-gonic/gin"
 )
@@ -13,6 +13,9 @@ import (
 func init() {
 	web.RouteHandler.RegisterRouter(web.LEVEL_GLOBAL, func(h *gin.RouterGroup) {
 		h.POST("/permission/login", Login)
+	})
+	web.RouteHandler.RegisterRouter(web.LEVEL_V1, func(h *gin.RouterGroup) {
+		h.GET("/permission/logout", Logout)
 	})
 }
 
@@ -29,7 +32,7 @@ func Login(c *gin.Context) {
 		return
 	}
 	// 登录
-	token, err := login.Login(c.Request.Context(), req)
+	token, err := account.Login(c.Request.Context(), req)
 	if err != nil {
 		r.ErrorMsg(constant.USER_NOT_LOGIN, err.Error())
 		return
@@ -46,4 +49,19 @@ func checkParams(req *entity.LoginRequest) bool {
 		return false
 	}
 	return true
+}
+
+func Logout(c *gin.Context) {
+	r := web.NewResponse(c)
+	token := c.GetHeader(string(constant.RequestHeaderKeyToken))
+	if token == "" {
+		r.ErrorCode(constant.TOKEN_IS_NULL)
+		return
+	}
+	err := account.Logout(c.Request.Context(), token)
+	if err != nil {
+		r.ErrorMsg(constant.COMMON_FAIL, err.Error())
+		return
+	}
+	r.Success(nil)
 }
