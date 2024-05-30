@@ -1,9 +1,9 @@
 package entity
 
 import (
-	"achobeta-svc/internal/achobeta-svc-common/pkg/utils"
 	"fmt"
 
+	"github.com/google/uuid"
 	"gorm.io/gorm"
 )
 
@@ -20,11 +20,19 @@ func (*User) TableName() string {
 }
 
 func MockUser() *User {
-	mockNickName := utils.GetSnowflakeUUID()[:6]
+	uid := uuid.NewString()
 	return &User{
-		Nickname:     fmt.Sprintf("用户%s", mockNickName),
+		Nickname:     fmt.Sprintf("用户%s", uid[len(uid)-10:]),
 		Gender:       0,
 		Avatar:       "",
 		Introduction: "",
 	}
+}
+
+type UserInfoEntity struct {
+	Id       uint
+	Username string
+	Email    string
+	Phone    string
+	User     *User
 }
