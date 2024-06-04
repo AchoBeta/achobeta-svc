@@ -1,0 +1,21 @@
+syntax = "proto3";
+
+// 指定proto文件
+option go_package="./out/website";
+
+package website.hello.v1;
+
+service HelloService {
+  rpc Say (SayRequest) returns (SayResponse);
+
+}
+
+message SayResponse {
+  string message = 1;
+  string code = 2;
+  string new_field = 3;
+}
+
+message SayRequest {
+  string name = 1;
+}

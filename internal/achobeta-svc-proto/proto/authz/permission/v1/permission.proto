@@ -1,0 +1,20 @@
+syntax = "proto3";
+package authz.permission.v1;
+// 指定proto文件
+option go_package="achobeta-svc-proto/proto/authz/permission/v1;permissionv1";
+// 引入validate.proto
+
+import "buf/validate/validate.proto";
+
+service AuthzService {
+    rpc Login(LoginRequest) returns (LoginResponse);
+}
+
+message LoginRequest {
+  string username = 1;
+  string password = 2;
+}
+
+message LoginResponse {
+  string id = 1;
+}
