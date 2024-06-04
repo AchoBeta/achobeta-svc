@@ -3,9 +3,9 @@ package main
 import (
 	"achobeta-svc/internal/achobeta-svc-common/pkg/utils"
 	"achobeta-svc/internal/achobeta-svc-third-party/config"
+	"achobeta-svc/internal/achobeta-svc-third-party/internal/router"
+	"achobeta-svc/internal/achobeta-svc-third-party/internal/service"
 
-	"achobeta-svc/internal/achobeta-svc-third-party/inernal/router"
-	"achobeta-svc/internal/achobeta-svc-third-party/inernal/service"
 	"flag"
 )
 

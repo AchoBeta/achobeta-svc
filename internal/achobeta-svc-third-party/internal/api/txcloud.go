@@ -6,7 +6,7 @@ import (
 	"achobeta-svc/internal/achobeta-svc-common/pkg/utils"
 	"achobeta-svc/internal/achobeta-svc-common/pkg/web"
 
-	"achobeta-svc/internal/achobeta-svc-third-party/inernal/service/txcloud"
+	"achobeta-svc/internal/achobeta-svc-third-party/internal/service/txcloud"
 
 	"github.com/gin-gonic/gin"
 )

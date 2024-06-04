@@ -6,8 +6,8 @@ import (
 	"achobeta-svc/internal/achobeta-svc-third-party/config"
 	"fmt"
 
-	_ "achobeta-svc/internal/achobeta-svc-third-party/inernal/api"
-	_ "achobeta-svc/internal/achobeta-svc-third-party/inernal/router/middleware"
+	_ "achobeta-svc/internal/achobeta-svc-third-party/internal/api"
+	_ "achobeta-svc/internal/achobeta-svc-third-party/internal/router/middleware"
 
 	"github.com/gin-gonic/gin"
 )

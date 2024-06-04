@@ -3,6 +3,7 @@ module achobeta-svc
 go 1.22.1
 
 require (
+	github.com/casbin/casbin/v2 v2.90.0
 	github.com/gin-gonic/gin v1.10.0
 	github.com/go-redis/redis v6.15.9+incompatible
 	github.com/google/uuid v1.6.0
@@ -19,6 +20,7 @@ require (
 	github.com/BurntSushi/toml v1.3.2 // indirect
 	github.com/bytedance/sonic v1.11.7 // indirect
 	github.com/bytedance/sonic/loader v0.1.1 // indirect
+	github.com/casbin/govaluate v1.1.0 // indirect
 	github.com/clbanning/mxj v1.8.4 // indirect
 	github.com/cloudwego/base64x v0.1.4 // indirect
 	github.com/cloudwego/iasm v0.2.0 // indirect
