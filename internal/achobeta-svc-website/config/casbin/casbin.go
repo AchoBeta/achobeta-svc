@@ -38,7 +38,7 @@ func Check(sub, dom, obj, act string) bool {
 	return ok
 }
 
-func ModifyPolicy(ptype string, sub, dom, obj, act string) bool {
+func ModifyPolicy(ptype string, sub, dom, obj, act string) error {
 	// 修改策略, 开启事务
 	if err := e.GetAdapter().(*gormadapter.Adapter).Transaction(e, func(e casbin.IEnforcer) error {
 		_, err := e.AddPolicy(sub, dom, obj, act)
@@ -47,8 +47,21 @@ func ModifyPolicy(ptype string, sub, dom, obj, act string) bool {
 		}
 		return nil
 	}); err != nil {
-		// handle if transaction failed
-		return false
+		return err
 	}
-	return true
+	return nil
+}
+
+func AddPolicy(sub, dom, obj, act string) error {
+	// 添加策略, 开启事务
+	if err := e.GetAdapter().(*gormadapter.Adapter).Transaction(e, func(e casbin.IEnforcer) error {
+		_, err := e.AddPolicy(sub, dom, obj, act)
+		if err != nil {
+			return err
+		}
+		return nil
+	}); err != nil {
+		return err
+	}
+	return nil
 }

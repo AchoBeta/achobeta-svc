@@ -26,5 +26,6 @@ func main() {
 	// 初始化服务
 	utils.NewSnowflake()
 	/** server 启动要放在最后*/
-	router.RunServer()
+	// router.RunServer()
+	router.RunRPCServer()
 }
