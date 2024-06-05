@@ -9,8 +9,10 @@ require (
 	github.com/gin-gonic/gin v1.10.0
 	github.com/go-redis/redis v6.15.9+incompatible
 	github.com/google/uuid v1.6.0
+	github.com/google/wire v0.6.0
 	github.com/grpc-ecosystem/grpc-gateway/v2 v2.20.0
 	github.com/natefinch/lumberjack v2.0.0+incompatible
+	github.com/redis/go-redis/v9 v9.5.2
 	github.com/spf13/viper v1.18.2
 	github.com/tencentyun/cos-go-sdk-v5 v0.7.47
 	go.uber.org/zap v1.27.0
@@ -47,7 +49,6 @@ require (
 	github.com/golang-sql/sqlexp v0.1.0 // indirect
 	github.com/google/go-querystring v1.1.0 // indirect
 	github.com/google/pprof v0.0.0-20240528025155-186aa0362fba // indirect
-	github.com/google/wire v0.6.0 // indirect
 	github.com/hashicorp/hcl v1.0.0 // indirect
 	github.com/jackc/pgpassfile v1.0.0 // indirect
 	github.com/jackc/pgservicefile v0.0.0-20221227161230-091c0ba34f0a // indirect
@@ -68,7 +69,6 @@ require (
 	github.com/onsi/gomega v1.33.1 // indirect
 	github.com/pelletier/go-toml/v2 v2.2.2 // indirect
 	github.com/pkg/browser v0.0.0-20240102092130-5ac0b6a4141c // indirect
-	github.com/redis/go-redis/v9 v9.5.2 // indirect
 	github.com/remyoudompheng/bigfft v0.0.0-20230126093431-47fa9a501578 // indirect
 	github.com/sagikazarmark/locafero v0.4.0 // indirect
 	github.com/sagikazarmark/slog-shim v0.1.0 // indirect

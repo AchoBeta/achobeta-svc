@@ -1,14 +1,15 @@
 package service
 
+import "achobeta-svc/internal/achobeta-svc-authz/internal/service/permission"
+
 // Services 是所有服务的集合
+
 type Services struct {
-	ReportService    *reportService
-	DashboardService *dashboardService
+	PermissionService *permission.PermissionServiceServer
 }
 
-func newServices(reportService *reportService, dashboardService *dashboardService) *Services {
+func newServices(p *permission.PermissionServiceServer) *Services {
 	return &Services{
-		ReportService:    reportService,
-		DashboardService: dashboardService,
+		PermissionService: p,
 	}
 }

@@ -1,7 +1,7 @@
 package cache
 
 import (
-	"achobeta-svc/internal/achobeta-svc-website/config"
+	"achobeta-svc/internal/achobeta-svc-authz/config"
 	"context"
 	"fmt"
 

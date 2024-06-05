@@ -9,7 +9,10 @@ install:
 
 init: init_hook install
 	@echo "Init done!"
-
+wire:
+	@wire  ./internal/service
+	@echo "wire successfully!"
+	
 lint:
 	@# 简化 go mod 文件
 	@go mod tidy
@@ -22,5 +25,5 @@ build:
 	go build -o authz-server ./internal
 run :
 	@echo "Running..."
-	./authz-server  -config ./config/config.yaml -casbin ./config/casbin/model.conf
+	./authz-server  -config ./config/config.yaml -casbin ./config/model.conf
 .PHONY: init

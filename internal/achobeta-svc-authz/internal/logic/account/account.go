@@ -1,19 +1,35 @@
 package account
 
 import (
-	"achobeta-svc/internal/achobeta-svc-authz/config"
 	"achobeta-svc/internal/achobeta-svc-authz/internal/entity"
+	"achobeta-svc/internal/achobeta-svc-authz/internal/repo/cache"
+	"achobeta-svc/internal/achobeta-svc-authz/internal/repo/casbin"
+	"achobeta-svc/internal/achobeta-svc-authz/internal/repo/database"
 	"achobeta-svc/internal/achobeta-svc-common/pkg/tlog"
 	"achobeta-svc/internal/achobeta-svc-common/pkg/utils"
 	"context"
 )
 
+type Permission struct {
+	database database.Database
+	cache    cache.Cache
+	casbin   casbin.Casbin
+}
+
+func New(db database.Database, c cache.Cache, cas casbin.Casbin) *Permission {
+	return &Permission{
+		database: db,
+		cache:    c,
+		casbin:   cas,
+	}
+}
+
 // CreateAccount 创建账号
 // 方法内部对密码进行加密, 外层调用无需关心加密逻辑
-func CreateAccount(ctx context.Context, ue *entity.Account) error {
+func (p *Permission) CreateAccount(ctx context.Context, ue *entity.Account) error {
 	ue.ID = uint(utils.GetSnowflakeID())
 	ue.Password = hashPassword(ue.Password)
-	result := config.GetMysql().Create(&ue)
+	result := p.database.Get().Create(&ue)
 	if result.Error != nil {
 		return result.Error
 	}
@@ -30,10 +46,10 @@ func hashPassword(pwd string) string {
 	return string(hashedPwd)
 }
 
-func QueryAccount(ctx context.Context, params *entity.Account) (*entity.Account, error) {
+func (p *Permission) QueryAccount(ctx context.Context, params *entity.Account) (*entity.Account, error) {
 	account := &entity.Account{}
 	tlog.CtxInfof(ctx, "query account, params:[%+v\n]", params)
-	result := config.GetMysql().Debug().Where(params).First(account)
+	result := p.database.Get().Debug().Where(params).First(account)
 	if result.Error != nil {
 		return nil, result.Error
 	}
