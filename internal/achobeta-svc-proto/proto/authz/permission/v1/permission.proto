@@ -20,7 +20,7 @@ message CreateAccountRequest {
 }
 
 message CreateAccountResponse {
-  string id = 1;
+  uint64 id = 1;
 }
 
 service AuthzService {

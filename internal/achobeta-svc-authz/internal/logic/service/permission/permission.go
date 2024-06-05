@@ -1,6 +1,8 @@
 package permission
 
 import (
+	"achobeta-svc/internal/achobeta-svc-authz/internal/entity"
+	"achobeta-svc/internal/achobeta-svc-authz/internal/logic/handler/account"
 	permissionv1 "achobeta-svc/internal/achobeta-svc-proto/gen/go/authz/permission/v1"
 	"context"
 )
@@ -15,6 +17,15 @@ type AuthzServiceServer struct {
 
 // CreateAccount 创建账号接口
 func (p *AuthzServiceServer) CreateAccount(ctx context.Context, req *permissionv1.CreateAccountRequest) (*permissionv1.CreateAccountResponse, error) {
-	resp := &permissionv1.CreateAccountResponse{}
+	ue := &entity.Account{
+		Username: req.Username,
+		Password: req.Password,
+		Phone:    req.Phone,
+		Email:    req.Email,
+	}
+	account.CreateAccount(ctx, ue)
+	resp := &permissionv1.CreateAccountResponse{
+		Id: uint64(ue.ID),
+	}
 	return resp, nil
 }
