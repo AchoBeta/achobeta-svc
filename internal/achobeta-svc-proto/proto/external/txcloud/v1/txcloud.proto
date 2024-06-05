@@ -1,0 +1,24 @@
+syntax = "proto3";
+
+// 指定proto文件
+package external.txcloud.v1;
+option go_package = "/external/txcloud/v1";
+
+service TxCloudService {
+    rpc UploadObject(stream UploadObjectChunk) returns (UploadObjectStatus);
+}
+
+// 流式上传
+message UploadObjectChunk {
+    bytes content = 1;
+}
+
+message UploadObjectStatus {
+    UploadStatus status = 1;
+    string message = 2;
+}
+enum UploadStatus {
+    Unknow = 0;
+    Success = 1;
+    Faild = 2;
+  }
