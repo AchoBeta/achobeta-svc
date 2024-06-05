@@ -1,5 +1,5 @@
 lint:
-	@buf lint ./achobeta
+	@buf lint ./proto
 	@echo "Check done"
 
 clean:
@@ -18,8 +18,8 @@ install:
 .PHONY: gen
 gen:
 	@rm -rf ./gen
-	@buf dep update achobeta
-	@buf build achobeta
+	@buf dep update proto
+	@buf build proto
 	@buf generate
 	@go mod tidy
 	@echo "Generate done"
