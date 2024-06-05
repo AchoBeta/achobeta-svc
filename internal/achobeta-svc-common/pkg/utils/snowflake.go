@@ -38,6 +38,10 @@ func GetSnowflakeUUID() string {
 }
 
 func NewSnowflake() {
+	if snow != nil {
+		tlog.Infof("snowflake has been initialized")
+		return
+	}
 	var err error
 	snow, err = newSnowflake(machineId)
 	if err != nil {

@@ -1,22 +1,29 @@
 syntax = "proto3";
+
 package authz.permission.v1;
-// 指定proto文件
 option go_package="authz/permission/v1;permissionv1";
-// 引入validate.proto
 
 import "validate/validate.proto";
-service AuthzService {
-    rpc Login(LoginRequest) returns (LoginResponse);
-}
 
-message LoginRequest {
+// 定义请求和响应消息
+message CreateAccountRequest {
   string username = 1 [(validate.rules).string = {
-    pattern:   "^[A-Za-z]+( [A-Za-z]+)*$",
     max_bytes: 256,
   }];
   string password = 2;
+  string phone = 3 [(validate.rules).string = {
+    pattern: "^1[3-9]\\d{9}$",
+  }];
+  string email = 4 [(validate.rules).string = {
+    pattern: "^[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\\.[a-zA-Z0-9_-]+)+$",
+  }];
 }
 
-message LoginResponse {
+message CreateAccountResponse {
   string id = 1;
+}
+
+service AuthzService {
+  // 创建账号
+  rpc CreateAccount(CreateAccountRequest) returns (CreateAccountResponse);
 }
