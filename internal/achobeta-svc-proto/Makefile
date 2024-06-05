@@ -1,5 +1,5 @@
 lint:
-	@buf lint ./proto
+	@buf lint ./achobeta
 	@echo "Check done"
 
 clean:
@@ -21,6 +21,7 @@ gen:
 	@buf dep update achobeta
 	@buf build achobeta
 	@buf generate
+	@go mod tidy
 	@echo "Generate done"
  
 .PHONY: buf

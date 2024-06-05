@@ -10,3 +10,7 @@ plugins:
     # - require_unimplemented_servers=true
   - plugin: buf.build/bufbuild/validate-go
     out: gen/go
+  - plugin: buf.build/grpc-ecosystem/gateway
+    out: gen/go
+    opt:
+      - paths=source_relative
