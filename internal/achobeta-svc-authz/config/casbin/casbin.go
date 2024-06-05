@@ -1,9 +1,9 @@
 package casbin
 
 import (
+	"achobeta-svc/internal/achobeta-svc-authz/config"
 	"achobeta-svc/internal/achobeta-svc-authz/internal/entity"
 	"achobeta-svc/internal/achobeta-svc-common/pkg/tlog"
-	"achobeta-svc/internal/achobeta-svc-website/config"
 
 	"github.com/casbin/casbin/v2"
 	gormadapter "github.com/casbin/gorm-adapter/v3"
@@ -21,7 +21,10 @@ func Init(modelFile string) {
 		panic(err)
 	}
 	tlog.Infof("init casbin success!")
-	e.LoadPolicy()
+	if err = e.LoadPolicy(); err != nil {
+		tlog.Errorf("load policy error: %s", err.Error())
+		panic(err)
+	}
 }
 
 func loadDBConfig(db *gorm.DB) *gormadapter.Adapter {

@@ -25,7 +25,9 @@ func createLumberWriter(filePath string) *lumberjack.Logger {
 }
 
 func checkPathExist(logPath string) (string, string, string) {
-	os.MkdirAll(logPath, os.ModePerm)
+	if err := os.MkdirAll(logPath, os.ModePerm); err != nil {
+		panic(err.Error())
+	}
 	logFileName := time.Now().Format("2006-01-02") + ".log"
 	warnFileName := time.Now().Format("2006-01-02") + "-warn.log"
 	errorFileName := time.Now().Format("2006-01-02") + "-error.log"

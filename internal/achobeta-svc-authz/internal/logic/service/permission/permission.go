@@ -3,6 +3,7 @@ package permission
 import (
 	"achobeta-svc/internal/achobeta-svc-authz/internal/entity"
 	"achobeta-svc/internal/achobeta-svc-authz/internal/logic/handler/account"
+	"achobeta-svc/internal/achobeta-svc-common/pkg/tlog"
 	permissionv1 "achobeta-svc/internal/achobeta-svc-proto/gen/go/authz/permission/v1"
 	"context"
 )
@@ -23,7 +24,10 @@ func (p *AuthzServiceServer) CreateAccount(ctx context.Context, req *permissionv
 		Phone:    req.Phone,
 		Email:    req.Email,
 	}
-	account.CreateAccount(ctx, ue)
+	if err := account.CreateAccount(ctx, ue); err != nil {
+		tlog.CtxErrorf(ctx, "CreateAccount err: %v", err)
+		return nil, err
+	}
 	resp := &permissionv1.CreateAccountResponse{
 		Id: uint64(ue.ID),
 	}
