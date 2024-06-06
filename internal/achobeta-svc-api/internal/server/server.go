@@ -1,0 +1,26 @@
+package server
+
+import (
+	"achobeta-svc/internal/achobeta-svc-api/config"
+	"achobeta-svc/internal/achobeta-svc-common/lib/tlog"
+	"achobeta-svc/internal/achobeta-svc-common/pkg/web"
+	"fmt"
+
+	"github.com/gin-gonic/gin"
+)
+
+// RunServer 启动服务
+// api层的服务启动 用的gin框架
+// 所以在api层的服务启动中，需要注册路由
+// 前端与api层的交互走的是http协议, api与service层的交互走的是grpc协议
+func RunServer() {
+	c := config.Get()
+	g := gin.New()
+	web.RouteHandler.Register(g)
+	// run 在最后
+	err := g.Run(fmt.Sprintf("%s:%d", c.Host, c.Port))
+	if err != nil {
+		tlog.Errorf("Listen error: %v", err)
+		panic(err)
+	}
+}
