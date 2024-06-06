@@ -23,7 +23,7 @@ func main() {
 	flag.Parse()
 	// 初始化配置, 需要保证config和log先初始化
 	config.InitConfig(*configPath)
-	config.InitLog(*logFilePath)
+	tlog.InitLog(*logFilePath)
 	// 初始化服务
 	utils.NewSnowflake()
 	/** server 启动要放在最后*/

@@ -1,7 +1,6 @@
-package config
+package tlog
 
 import (
-	"achobeta-svc/internal/achobeta-svc-common/lib/tlog"
 	"os"
 	"path"
 	"path/filepath"
@@ -25,9 +24,7 @@ func createLumberWriter(filePath string) *lumberjack.Logger {
 }
 
 func checkPathExist(logPath string) (string, string, string) {
-	if err := os.MkdirAll(logPath, os.ModePerm); err != nil {
-		panic(err.Error())
-	}
+	os.MkdirAll(logPath, os.ModePerm)
 	logFileName := time.Now().Format("2006-01-02") + ".log"
 	warnFileName := time.Now().Format("2006-01-02") + "-warn.log"
 	errorFileName := time.Now().Format("2006-01-02") + "-error.log"
@@ -56,11 +53,7 @@ func InitLog(logPath string) {
 	zapLogger := zap.New(
 		buildZapCores(infofile, warnfile, errfile),
 		zapOptions...)
-	tlog.InitLogger(zapLogger)
-	// logger := hertzzap.NewLogger(hertzzap.WithZapOptions(zapOptions...))
-	// logger.SetOutput(createLumberWriter(file))
-	// logger.SetLevel(tlog.LevelInfo)
-	// tlog.SetLogger(logger)
+	InitLogger(zapLogger)
 }
 
 func buildZapCores(infoFile, warnFile, errFile string) zapcore.Core {

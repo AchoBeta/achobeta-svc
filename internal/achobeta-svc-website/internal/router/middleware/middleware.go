@@ -22,11 +22,11 @@ func init() {
 func AddTraceId() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		// 假设 Trace ID 存在于 HTTP Header "X-Trace-ID" 中
-		traceId := c.GetHeader("traceId")
+		traceId := c.GetHeader("x-trace-id")
 		if traceId == "" {
 			traceId = uuid.New().String()
 		}
-		ctx := tlog.NewContext(c, zap.String("traceId", traceId))
+		ctx := tlog.NewContext(c, zap.String("x-trace-id", traceId))
 		c.Request = c.Request.WithContext(ctx)
 		c.Keys = map[string]any{
 			"traceId": traceId,
@@ -43,7 +43,7 @@ func ErrorHandler() gin.HandlerFunc {
 			if err != nil {
 				r := web.NewResponse(c)
 				tlog.Infof("error: %v", err)
-				r.ErrorTrace(constant.COMMON_FAIL, err.Error(), c.Request.Context().Value("traceId").(string))
+				r.ErrorTrace(constant.COMMON_FAIL, err.Error(), c.Request.Context().Value("x-trace-id").(string))
 				return
 			}
 		}

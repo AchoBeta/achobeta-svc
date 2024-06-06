@@ -10,11 +10,9 @@
 
 # Test binary, built with `go test -c`
 *.test
-
+logs/*
 # Output of the go coverage tool, specifically when used with LiteIDE
 vendor/
-# executable file
-server
 # Dependency directories (remove the comment below to include it)
 # vendor/
 
