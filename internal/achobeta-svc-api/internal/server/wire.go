@@ -22,5 +22,5 @@ func InitServices() *Apis {
 		auth.NewLogic,
 		// repo
 		authz.New)
-	return &Apis{}
+	return &Apis{
 }
