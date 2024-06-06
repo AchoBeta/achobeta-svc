@@ -36,8 +36,8 @@ func main() {
 	reply, err := client.CreateAccount(context.Background(), &permissionv1.CreateAccountRequest{
 		Username: "jett",
 		Password: "123123",
-		Phone:    "137122123123",
-		Email:    "jettccgmail.com",
+		Phone:    "13712212313",
+		Email:    "jettcc@gmail.com",
 	})
 	if err != nil {
 		log.Fatal(err)

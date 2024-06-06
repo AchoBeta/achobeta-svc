@@ -1,0 +1,34 @@
+syntax = "proto3";
+
+// 指定proto文件
+package common.errors.v1;
+option go_package = "/common/errors/v1";
+
+
+message CommonError {
+    Code code = 1;
+    string message = 2;
+}
+
+// 错误码
+enum Code {
+    // 未知错误
+    CODE_UNSPECIFIED = 0;
+    // 参数错误
+    CODE_INVALID_ARGUMENT = 1;
+    // 无权限
+    CODE_PERMISSION_DENIED = 2;
+    // 未找到
+    CODE_NOT_FOUND = 3;
+    // 已存在
+    CODE_ALREADY_EXISTS = 4;
+    // 无效的状态
+    CODE_INVALID_STATE = 5;
+    // 未认证
+    CODE_UNAUTHENTICATED = 6;
+    // 未授权
+    CODE_UNAUTHORIZED = 7;
+    // 服务不可用
+    CODE_SERVICE_UNAVAILABLE = 8;
+}
+ 
