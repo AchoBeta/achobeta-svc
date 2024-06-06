@@ -1,7 +1,7 @@
 package txcloud
 
 import (
-	"achobeta-svc/internal/achobeta-svc-common/pkg/tlog"
+	"achobeta-svc/internal/achobeta-svc-common/lib/tlog"
 	"achobeta-svc/internal/achobeta-svc-third-party/config"
 	"context"
 	"io"

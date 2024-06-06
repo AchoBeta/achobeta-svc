@@ -4,7 +4,7 @@ import (
 	"achobeta-svc/internal/achobeta-svc-authz/internal/entity"
 	"achobeta-svc/internal/achobeta-svc-authz/internal/logic/account"
 	"achobeta-svc/internal/achobeta-svc-authz/internal/logic/user"
-	"achobeta-svc/internal/achobeta-svc-common/pkg/tlog"
+	"achobeta-svc/internal/achobeta-svc-common/lib/tlog"
 	permissionv1 "achobeta-svc/internal/achobeta-svc-proto/gen/go/authz/permission/v1"
 	"context"
 )

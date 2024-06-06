@@ -1,7 +1,7 @@
 package account
 
 import (
-	"achobeta-svc/internal/achobeta-svc-common/pkg/tlog"
+	"achobeta-svc/internal/achobeta-svc-common/lib/tlog"
 	"achobeta-svc/internal/achobeta-svc-common/pkg/utils"
 	"achobeta-svc/internal/achobeta-svc-website/config"
 	"achobeta-svc/internal/achobeta-svc-website/internal/entity"

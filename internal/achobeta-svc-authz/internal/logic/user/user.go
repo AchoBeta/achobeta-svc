@@ -4,7 +4,7 @@ import (
 	"achobeta-svc/internal/achobeta-svc-authz/internal/entity"
 	"achobeta-svc/internal/achobeta-svc-authz/internal/repo/cache"
 	"achobeta-svc/internal/achobeta-svc-authz/internal/repo/database"
-	"achobeta-svc/internal/achobeta-svc-common/pkg/tlog"
+	"achobeta-svc/internal/achobeta-svc-common/lib/tlog"
 
 	"context"
 	"fmt"

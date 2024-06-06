@@ -1,7 +1,7 @@
 package utils
 
 import (
-	"achobeta-svc/internal/achobeta-svc-common/pkg/tlog"
+	"achobeta-svc/internal/achobeta-svc-common/lib/tlog"
 	"errors"
 	"fmt"
 	"sync"

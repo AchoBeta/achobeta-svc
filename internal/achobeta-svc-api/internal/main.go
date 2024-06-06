@@ -37,7 +37,7 @@ func main() {
 		Username: "jett",
 		Password: "123123",
 		Phone:    "137122123123",
-		Email:    "jettcc@gmail.com",
+		Email:    "jettccgmail.com",
 	})
 	if err != nil {
 		log.Fatal(err)

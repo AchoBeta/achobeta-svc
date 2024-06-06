@@ -2,7 +2,7 @@ package casbin
 
 import (
 	"achobeta-svc/internal/achobeta-svc-authz/config"
-	"achobeta-svc/internal/achobeta-svc-common/pkg/tlog"
+	"achobeta-svc/internal/achobeta-svc-common/lib/tlog"
 	"flag"
 	"fmt"
 

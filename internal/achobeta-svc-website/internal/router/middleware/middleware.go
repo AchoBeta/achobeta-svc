@@ -1,8 +1,8 @@
 package middleware
 
 import (
+	"achobeta-svc/internal/achobeta-svc-common/lib/tlog"
 	"achobeta-svc/internal/achobeta-svc-common/pkg/constant"
-	"achobeta-svc/internal/achobeta-svc-common/pkg/tlog"
 	"achobeta-svc/internal/achobeta-svc-common/pkg/web"
 	"achobeta-svc/internal/achobeta-svc-website/config"
 	"context"

@@ -5,7 +5,7 @@ import (
 	"achobeta-svc/internal/achobeta-svc-authz/internal/repo/cache"
 	"achobeta-svc/internal/achobeta-svc-authz/internal/repo/casbin"
 	"achobeta-svc/internal/achobeta-svc-authz/internal/repo/database"
-	"achobeta-svc/internal/achobeta-svc-common/pkg/tlog"
+	"achobeta-svc/internal/achobeta-svc-common/lib/tlog"
 	"achobeta-svc/internal/achobeta-svc-common/pkg/utils"
 	"context"
 )

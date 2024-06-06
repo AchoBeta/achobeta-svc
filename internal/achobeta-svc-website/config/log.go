@@ -1,7 +1,7 @@
 package config
 
 import (
-	"achobeta-svc/internal/achobeta-svc-common/pkg/tlog"
+	"achobeta-svc/internal/achobeta-svc-common/lib/tlog"
 	"os"
 	"path"
 	"path/filepath"

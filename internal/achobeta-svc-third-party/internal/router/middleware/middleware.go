@@ -1,7 +1,7 @@
 package middleware
 
 import (
-	"achobeta-svc/internal/achobeta-svc-common/pkg/tlog"
+	"achobeta-svc/internal/achobeta-svc-common/lib/tlog"
 	"achobeta-svc/internal/achobeta-svc-common/pkg/web"
 
 	"github.com/gin-gonic/gin"

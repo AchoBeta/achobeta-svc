@@ -1,8 +1,8 @@
 package api
 
 import (
+	"achobeta-svc/internal/achobeta-svc-common/lib/tlog"
 	"achobeta-svc/internal/achobeta-svc-common/pkg/constant"
-	"achobeta-svc/internal/achobeta-svc-common/pkg/tlog"
 	"achobeta-svc/internal/achobeta-svc-common/pkg/utils"
 	"achobeta-svc/internal/achobeta-svc-common/pkg/web"
 

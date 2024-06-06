@@ -1,7 +1,7 @@
 package web
 
 import (
-	"achobeta-svc/internal/achobeta-svc-common/pkg/tlog"
+	"achobeta-svc/internal/achobeta-svc-common/lib/tlog"
 	"fmt"
 
 	"github.com/gin-gonic/gin"

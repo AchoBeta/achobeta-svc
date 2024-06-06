@@ -3,7 +3,7 @@ package main
 import (
 	"achobeta-svc/internal/achobeta-svc-authz/config"
 	"achobeta-svc/internal/achobeta-svc-authz/internal/service"
-	"achobeta-svc/internal/achobeta-svc-common/pkg/tlog"
+	"achobeta-svc/internal/achobeta-svc-common/lib/tlog"
 	"achobeta-svc/internal/achobeta-svc-common/pkg/utils"
 	permissionv1 "achobeta-svc/internal/achobeta-svc-proto/gen/go/authz/permission/v1"
 	"fmt"

@@ -83,3 +83,19 @@ func CtxPanicf(ctx context.Context, format string, v ...interface{}) {
 func CtxFatalf(ctx context.Context, format string, v ...interface{}) {
 	withContext(ctx).Fatal(fmt.Sprintf(format, v...))
 }
+
+func Debug(ctx context.Context, msg string, fields ...zapcore.Field) {
+	withContext(ctx).Debug(msg, fields...)
+}
+
+func Info(ctx context.Context, msg string, fields ...zapcore.Field) {
+	withContext(ctx).Info(msg, fields...)
+}
+
+func Warn(ctx context.Context, msg string, fields ...zapcore.Field) {
+	withContext(ctx).Warn(msg, fields...)
+}
+
+func Error(ctx context.Context, msg string, fields ...zapcore.Field) {
+	withContext(ctx).Error(msg, fields...)
+}
