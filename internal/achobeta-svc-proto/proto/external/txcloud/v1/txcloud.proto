@@ -5,20 +5,21 @@ package external.txcloud.v1;
 option go_package = "/external/txcloud/v1";
 
 service TxCloudService {
-    rpc UploadObject(stream UploadObjectChunk) returns (UploadObjectStatus);
+    rpc UploadObject(stream UploadObjectRequest) returns (UploadObjectResponse);
 }
 
 // 流式上传
-message UploadObjectChunk {
+message UploadObjectRequest {
     bytes content = 1;
 }
 
-message UploadObjectStatus {
+message UploadObjectResponse {
     UploadStatus status = 1;
     string message = 2;
 }
 enum UploadStatus {
-    Unknow = 0;
-    Success = 1;
-    Faild = 2;
+    UPLOAD_STATUS_UNSPECIFIED = 0;
+
+    UPLOAD_STATUS_SUCCESS = 1;
+    UPLOAD_STATUS_FAILD = 2;
   }

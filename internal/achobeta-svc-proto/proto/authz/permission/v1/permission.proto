@@ -4,6 +4,7 @@ package authz.permission.v1;
 option go_package="authz/permission/v1;permissionv1";
 
 import "validate/validate.proto";
+import "google/protobuf/empty.proto";
 
 // 定义请求和响应消息
 message CreateAccountRequest {
@@ -22,8 +23,54 @@ message CreateAccountRequest {
 message CreateAccountResponse {
   uint64 id = 1;
 }
+/**
+ * 支持用户名、手机号、邮箱登录
+ * 每种登录方式都可以使用密码
+ * 后续也可以支持验证码登录
+ */
+message LoginRequest {
+  // 用户名登录
+  optional string username = 1;
+  optional string password = 2;
+  // 手机号登录
+  optional string phone = 3 [(validate.rules).string = {
+    pattern: "^1[3-9]\\d{9}$",
+  }];
+  // 邮箱登录
+  optional string email = 4 [(validate.rules).string = {
+    pattern: "^[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\\.[a-zA-Z0-9_-]+)+$",
+  }];
+}
+
+message LoginResponse {
+  string token = 1;
+}
+
+// 登出请求
+message LogoutRequest {
+  string token = 1;
+}
+
+message LogoutResponse{
+  google.protobuf.Empty empty = 1;
+}
+
+// 验证token请求
+message VerifyTokenRequest {
+  string token = 1;
+}
+// 验证token响应
+message VerifyTokenResponse {
+  bool valid = 1;
+}
 
 service AuthzService {
   // 创建账号
   rpc CreateAccount(CreateAccountRequest) returns (CreateAccountResponse);
+  // 登录
+  rpc Login(LoginRequest) returns (LoginResponse);
+  // 登出
+  rpc Logout(LogoutRequest) returns (LogoutResponse);
+  // 验证token
+  rpc VerifyToken(VerifyTokenRequest) returns (VerifyTokenResponse);
 }
