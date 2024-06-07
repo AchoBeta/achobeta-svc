@@ -15,9 +15,11 @@ require (
 	github.com/grpc-ecosystem/grpc-gateway/v2 v2.20.0
 	github.com/natefinch/lumberjack v2.0.0+incompatible
 	github.com/panjf2000/ants/v2 v2.9.1
+	github.com/panjf2000/ants/v2 v2.9.1
 	github.com/pkg/errors v0.9.1
 	github.com/redis/go-redis/v9 v9.5.2
 	github.com/spf13/viper v1.18.2
+	github.com/tencentyun/cos-go-sdk-v5 v0.7.47
 	go.uber.org/zap v1.27.0
 	golang.org/x/crypto v0.24.0
 	golang.org/x/text v0.16.0
@@ -69,6 +71,9 @@ require (
 	github.com/mitchellh/mapstructure v1.5.0 // indirect
 	github.com/modern-go/concurrent v0.0.0-20180306012644-bacd9c7ef1dd // indirect
 	github.com/modern-go/reflect2 v1.0.2 // indirect
+	github.com/mozillazg/go-httpheader v0.4.0 // indirect
+	github.com/onsi/ginkgo v1.16.5 // indirect
+	github.com/onsi/gomega v1.33.1 // indirect
 	github.com/pelletier/go-toml/v2 v2.2.2 // indirect
 	github.com/pkg/browser v0.0.0-20240102092130-5ac0b6a4141c // indirect
 	github.com/remyoudompheng/bigfft v0.0.0-20230126093431-47fa9a501578 // indirect

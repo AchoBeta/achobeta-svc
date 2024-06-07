@@ -8,7 +8,7 @@ init_hook:
 	git config core.hooksPath ./hooks
 	
 wire:
-	@wire  ./internal/server
+	@wire  ./internal/server/service
 	@echo "wire successfully!"
 	
 install:

@@ -3,6 +3,7 @@ package server
 import (
 	"achobeta-svc/internal/achobeta-svc-api/config"
 	"achobeta-svc/internal/achobeta-svc-api/internal/server/manager"
+	"achobeta-svc/internal/achobeta-svc-api/internal/server/service"
 	"achobeta-svc/internal/achobeta-svc-common/lib/tlog"
 	"fmt"
 
@@ -15,7 +16,7 @@ import (
 // 前端与api层的交互走的是http协议, api与service层的交互走的是grpc协议
 func RunServer() {
 	c := config.Get()
-	_ = InitServices()
+	_ = service.InitServices()
 	g := gin.New()
 	manager.RouteHandler.Register(g)
 

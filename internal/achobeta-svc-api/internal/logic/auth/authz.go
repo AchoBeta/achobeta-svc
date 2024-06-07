@@ -11,3 +11,7 @@ func NewLogic(z authz.AuthzRepo) *AuthzLogic {
 		az: z,
 	}
 }
+
+func (al *AuthzLogic) CreateAccount() {
+	// todo
+}
