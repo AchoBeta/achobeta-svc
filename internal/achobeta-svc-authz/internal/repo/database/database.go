@@ -2,20 +2,17 @@ package database
 
 import (
 	"achobeta-svc/internal/achobeta-svc-authz/config"
-	"achobeta-svc/internal/achobeta-svc-common/lib/tlog"
-	"fmt"
-	"log"
-	"os"
-	"time"
+	"database/sql"
 
-	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
-	"gorm.io/gorm/logger"
 )
 
 // Cache is an interface
 type Database interface {
 	Get() *gorm.DB
+	Create(model any) (*sql.Rows, error)
+	Update(model any) (*sql.Rows, error)
+	Delete(model any) (*sql.Rows, error)
 }
 
 type impl struct {
@@ -25,38 +22,22 @@ type impl struct {
 func New() Database {
 	// 应该由 go lib 提供统一的 New 方法，用于初始化 Redis
 	return &impl{
-		mysql_: initDatabase(),
+		mysql_: config.GetDB(),
 	}
-}
-
-func initDatabase() *gorm.DB {
-	// 初始化数据库连接
-	var err error
-	dm := config.Get().Database.Mysql
-	dsn := fmt.Sprintf("%s:%s@tcp(%s:%d)/%s?charset=utf8mb4&parseTime=True&loc=Local", dm.Username, dm.Password, dm.Host, dm.Port, dm.Database)
-	mysql_, err := gorm.Open(mysql.New(
-		mysql.Config{
-			DSN: dsn,
-		},
-	), &gorm.Config{
-		DisableAutomaticPing: true,
-		Logger: logger.New(log.New(os.Stdout, "\r\n", log.LstdFlags), // io writer
-			logger.Config{
-				SlowThreshold:             time.Second,   // Slow SQL threshold
-				LogLevel:                  logger.Silent, // Log level
-				IgnoreRecordNotFoundError: true,          // Ignore ErrRecordNotFound error for logger
-				ParameterizedQueries:      true,          // Don't include params in the SQL log
-				Colorful:                  false,         // Disable color
-			}),
-	})
-	if err != nil {
-		tlog.Errorf("connect mysql error: %s", err.Error())
-		panic(err)
-	}
-	tlog.Infof("connect mysql success!")
-	return mysql_
 }
 
 func (i *impl) Get() *gorm.DB {
 	return i.mysql_
+}
+
+func (i *impl) Create(model any) (*sql.Rows, error) {
+	return i.mysql_.Debug().Create(model).Rows()
+}
+
+func (i *impl) Update(model any) (*sql.Rows, error) {
+	return i.mysql_.Debug().Updates(model).Rows()
+}
+
+func (i *impl) Delete(model any) (*sql.Rows, error) {
+	return i.mysql_.Debug().Delete(model).Rows()
 }

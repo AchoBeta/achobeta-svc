@@ -3,22 +3,16 @@ package config
 import (
 	"achobeta-svc/internal/achobeta-svc-common/lib/tlog"
 	"fmt"
-
-	"github.com/go-redis/redis"
+	"log"
+	"os"
+	"time"
 
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
-
-	"log"
-	"os"
-	"time"
 )
 
-var (
-	mysql_ *gorm.DB
-	redis_ *redis.Client
-)
+var mysql_ *gorm.DB
 
 func InitDatabase() {
 	// 初始化数据库连接
@@ -47,25 +41,6 @@ func InitDatabase() {
 	tlog.Infof("connect mysql success!")
 }
 
-func InitRedis() {
-	rc := Get().Database.Redis
-	redis_ = redis.NewClient(&redis.Options{
-		Addr:     fmt.Sprintf("%s:%d", rc.Host, rc.Port),
-		Password: rc.Password,
-		DB:       rc.Database,
-	})
-	err := redis_.Ping().Err()
-	if err != nil {
-		tlog.Errorf("connect redis error: %s", err.Error())
-		panic(err)
-	}
-	tlog.Infof("connect redis success!")
-}
-
-func GetMysql() *gorm.DB {
+func GetDB() *gorm.DB {
 	return mysql_
-}
-
-func GetRedis() *redis.Client {
-	return redis_
 }

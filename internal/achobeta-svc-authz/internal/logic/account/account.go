@@ -29,9 +29,9 @@ func New(db database.Database, c cache.Cache, cas casbin.Casbin) *Permission {
 func (p *Permission) CreateAccount(ctx context.Context, ue *entity.Account) error {
 	ue.ID = uint(utils.GetSnowflakeID())
 	ue.Password = hashPassword(ue.Password)
-	result := p.database.Get().Create(&ue)
-	if result.Error != nil {
-		return result.Error
+	_, err := p.database.Create(&ue)
+	if err != nil {
+		return err
 	}
 	tlog.CtxInfof(ctx, "create account, username:[%s], email:[%s], phone:[%s]", ue.Username, ue.Email, ue.Phone)
 	return nil
@@ -49,9 +49,19 @@ func hashPassword(pwd string) string {
 func (p *Permission) QueryAccount(ctx context.Context, params *entity.Account) (*entity.Account, error) {
 	account := &entity.Account{}
 	tlog.CtxInfof(ctx, "query account, params:[%+v\n]", params)
-	result := p.database.Get().Debug().Where(params).First(account)
+	result := p.database.Get().Where(params).First(account)
 	if result.Error != nil {
 		return nil, result.Error
 	}
 	return account, nil
+}
+
+func (p *Permission) CheckToken(ctx context.Context, token string) (bool, error) {
+	claims, err := p.casbin.VerifyToken(token)
+	if err != nil {
+		tlog.CtxErrorf(ctx, "verify token error: %v", err)
+		return false, err
+	}
+	isVaild := p.casbin.Check(claims["userId"].(string), claims["domain"].(string), claims["object"].(string), claims["action"].(string))
+	return isVaild, nil
 }

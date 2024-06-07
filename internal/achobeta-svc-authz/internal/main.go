@@ -24,6 +24,7 @@ func main() {
 	// 初始化配置, 需要保证config和log先初始化
 	config.InitConfig(*configPath)
 	tlog.InitLog(*logFilePath)
+	config.InitDatabase()
 	// 初始化服务
 	utils.NewSnowflake()
 	/** server 启动要放在最后*/

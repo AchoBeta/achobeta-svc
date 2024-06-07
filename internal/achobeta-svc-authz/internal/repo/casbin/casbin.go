@@ -8,12 +8,15 @@ import (
 
 	"github.com/casbin/casbin/v2"
 	gormadapter "github.com/casbin/gorm-adapter/v3"
+	jwt "github.com/dgrijalva/jwt-go"
 )
 
 type Casbin interface {
 	Check(sub, dom, obj, act string) bool
 	ModifyPolicy(ptype string, sub, dom, obj, act string) error
 	AddPolicy(sub, dom, obj, act string) error
+	CreateToken(sub, dom, obj, act string) (string, error)
+	VerifyToken(token string) (jwt.MapClaims, error)
 }
 type impl struct {
 	e *casbin.Enforcer
