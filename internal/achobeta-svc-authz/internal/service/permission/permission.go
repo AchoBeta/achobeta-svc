@@ -7,6 +7,7 @@ import (
 	"achobeta-svc/internal/achobeta-svc-common/lib/tlog"
 	permissionv1 "achobeta-svc/internal/achobeta-svc-proto/gen/go/authz/permission/v1"
 	"context"
+	"fmt"
 )
 
 type PermissionServiceServer struct {
@@ -61,4 +62,62 @@ func (p *PermissionServiceServer) VerifyToken(ctx context.Context, req *permissi
 	return &permissionv1.VerifyTokenResponse{
 		Valid: vaild,
 	}, nil
+}
+
+func (p *PermissionServiceServer) Login(ctx context.Context, req *permissionv1.LoginRequest) (*permissionv1.LoginResponse, error) {
+	// 构建登录请求
+	loginReq, err := buildLoginRequest(req)
+	if err != nil {
+		tlog.CtxErrorf(ctx, "buildLoginRequest err: %v", err)
+		return nil, err
+	}
+	// 登录逻辑
+	token, err := p.pms.Login(ctx, loginReq)
+	if err != nil {
+		tlog.CtxErrorf(ctx, "Login err: %v", err)
+		return nil, err
+	}
+	return &permissionv1.LoginResponse{
+		Token: token,
+	}, nil
+}
+
+func buildLoginRequest(req *permissionv1.LoginRequest) (*entity.LoginRequest, error) {
+	if checkLoginParams(req) {
+		return nil, fmt.Errorf("login params error")
+	}
+	var loginKey string
+	if req.LoginType == permissionv1.LoginType_LOGIN_TYPE_USERNAME {
+		loginKey = req.GetUsername()
+	} else if req.LoginType == permissionv1.LoginType_LOGIN_TYPE_PHONE {
+		loginKey = req.GetPhone()
+	} else if req.LoginType == permissionv1.LoginType_LOGIN_TYPE_EMAIL {
+		loginKey = req.GetEmail()
+	}
+	return &entity.LoginRequest{
+		LoginKey: loginKey,
+		LoginPwd: req.GetPassword(),
+		Type:     converLoginType(req.GetLoginType()),
+	}, nil
+}
+
+func checkLoginParams(req *permissionv1.LoginRequest) bool {
+	if req.Username == nil && req.Phone == nil && req.Email == nil {
+		return false
+	}
+	if req.LoginType == permissionv1.LoginType_LOGIN_TYPE_USERNAME && req.Password == nil {
+		return false
+	}
+	return true
+}
+func converLoginType(t permissionv1.LoginType) entity.LoginType {
+	switch t {
+	case permissionv1.LoginType_LOGIN_TYPE_USERNAME:
+		return entity.LoginTypeUsername
+	case permissionv1.LoginType_LOGIN_TYPE_PHONE:
+		return entity.LoginTypePhone
+	case permissionv1.LoginType_LOGIN_TYPE_EMAIL:
+		return entity.LoginTypeEmail
+	}
+	return entity.LoginTypeUsername
 }

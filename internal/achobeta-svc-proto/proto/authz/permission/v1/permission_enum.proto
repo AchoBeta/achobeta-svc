@@ -1,0 +1,15 @@
+syntax = "proto3";
+
+package authz.permission.v1;
+option go_package="authz/permission/v1;permissionv1";
+
+enum LoginType {
+    // 未指定登录方式
+    LOGIN_TYPE_UNSPECIFIED = 0;
+    // 用户名登录
+    LOGIN_TYPE_USERNAME = 1;
+    // 手机号登录
+    LOGIN_TYPE_PHONE = 2;
+    // 邮箱登录
+    LOGIN_TYPE_EMAIL = 3;
+}
