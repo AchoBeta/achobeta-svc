@@ -12,19 +12,20 @@ type AuthzApi struct {
 }
 
 func NewAuthApi(al *auth.AuthzLogic) *AuthzApi {
-	RegisterRouter()
-	return &AuthzApi{
+	api := &AuthzApi{
 		authLogic: al,
 	}
+	RegisterRouter(api)
+	return api
 }
 
-func RegisterRouter() {
+func RegisterRouter(api *AuthzApi) {
 	manager.RouteHandler.RegisterRouter(manager.LEVEL_GLOBAL, func(h *gin.RouterGroup) {
-		h.GET("/ping", Ping)
+		h.GET("/ping", api.Ping)
 	})
 }
 
-func Ping(c *gin.Context) {
+func (api *AuthzApi) Ping(c *gin.Context) {
 	c.JSON(200, gin.H{
 		"message": "pong",
 	})
