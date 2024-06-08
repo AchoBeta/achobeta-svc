@@ -2,6 +2,7 @@ package casbin
 
 import (
 	"achobeta-svc/internal/achobeta-svc-authz/config"
+	"achobeta-svc/internal/achobeta-svc-authz/internal/entity"
 	"achobeta-svc/internal/achobeta-svc-common/lib/tlog"
 	"flag"
 	"fmt"
@@ -13,9 +14,8 @@ import (
 
 type Casbin interface {
 	Check(sub, dom, obj, act string) bool
-	ModifyPolicy(ptype string, sub, dom, obj, act string) error
-	AddPolicy(sub, dom, obj, act string) error
 	CreateToken(sub, dom, obj, act string) (string, error)
+	AddPolicy(sub *entity.CasbinRule) error
 	VerifyToken(token string) (jwt.MapClaims, error)
 }
 type impl struct {
@@ -64,24 +64,10 @@ func (c *impl) Check(sub, dom, obj, act string) bool {
 	return ok
 }
 
-func (c *impl) ModifyPolicy(ptype string, sub, dom, obj, act string) error {
-	// 修改策略, 开启事务
-	if err := c.e.GetAdapter().(*gormadapter.Adapter).Transaction(c.e, func(e casbin.IEnforcer) error {
-		_, err := e.AddPolicy(sub, dom, obj, act)
-		if err != nil {
-			return err
-		}
-		return nil
-	}); err != nil {
-		return err
-	}
-	return nil
-}
-
-func (c *impl) AddPolicy(sub, dom, obj, act string) error {
+func (c *impl) AddPolicy(sub *entity.CasbinRule) error {
 	// 添加策略, 开启事务
 	if err := c.e.GetAdapter().(*gormadapter.Adapter).Transaction(c.e, func(e casbin.IEnforcer) error {
-		_, err := e.AddPolicy(sub, dom, obj, act)
+		_, err := e.AddRoleForUser(sub.V0, sub.V1, sub.V2, sub.V3)
 		if err != nil {
 			return err
 		}

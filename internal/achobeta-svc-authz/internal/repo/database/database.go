@@ -13,6 +13,7 @@ type Database interface {
 	Create(model any) (*sql.Rows, error)
 	Update(model any) (*sql.Rows, error)
 	Delete(model any) (*sql.Rows, error)
+	Transaction(func(trc *gorm.DB) error) error
 }
 
 type impl struct {
@@ -40,4 +41,7 @@ func (i *impl) Update(model any) (*sql.Rows, error) {
 
 func (i *impl) Delete(model any) (*sql.Rows, error) {
 	return i.mysql_.Debug().Delete(model).Rows()
+}
+func (i *impl) Transaction(fn func(trc *gorm.DB) error) error {
+	return i.mysql_.Debug().Transaction(fn)
 }

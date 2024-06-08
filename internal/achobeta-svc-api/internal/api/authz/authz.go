@@ -35,11 +35,15 @@ func (api *AuthzApi) CreateAccount(c *gin.Context) {
 	cap := &entity.CreateAccountParams{}
 	if err := c.ShouldBindJSON(cap); err != nil {
 		tlog.CtxErrorf(c.Request.Context(), "bind json error: %v", err)
-		r.Error()
+		c.Error(err)
 		return
 	}
-
-	r.Success(nil)
+	id, err := api.authLogic.CreateAccount(c.Request.Context(), cap)
+	if err != nil {
+		c.Error(err)
+		return
+	}
+	r.Success(id)
 }
 
 func (api *AuthzApi) Ping(c *gin.Context) {

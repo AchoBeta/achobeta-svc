@@ -1,6 +1,7 @@
 package middleware
 
 import (
+	"achobeta-svc/internal/achobeta-svc-api/internal/server/manager"
 	"achobeta-svc/internal/achobeta-svc-common/lib/tlog"
 	"achobeta-svc/internal/achobeta-svc-common/pkg/constant"
 	"achobeta-svc/internal/achobeta-svc-common/pkg/web"
@@ -11,8 +12,8 @@ import (
 )
 
 func init() {
-	web.RouteHandler.RegisterMiddleware(web.LEVEL_GLOBAL, AddTraceId, true)
-	web.RouteHandler.RegisterMiddleware(web.LEVEL_GLOBAL, ErrorHandler, true)
+	manager.RouteHandler.RegisterMiddleware(manager.LEVEL_GLOBAL, AddTraceId, false)
+	manager.RouteHandler.RegisterMiddleware(manager.LEVEL_GLOBAL, ErrorHandler, false)
 	// web.RouteHandler.RegisterMiddleware(web.LEVEL_V1, CheckToken, true)
 }
 
@@ -39,8 +40,8 @@ func ErrorHandler() gin.HandlerFunc {
 			err := e.Err
 			if err != nil {
 				r := web.NewResponse(c)
-				tlog.Infof("error: %v", err)
-				r.ErrorTrace(constant.COMMON_FAIL, err.Error(), c.Request.Context().Value("x-trace-id").(string))
+				tlog.Infof("error: %+v", c.Keys)
+				r.ErrorTrace(constant.COMMON_FAIL, err.Error(), c.Keys["traceId"].(string))
 				return
 			}
 		}

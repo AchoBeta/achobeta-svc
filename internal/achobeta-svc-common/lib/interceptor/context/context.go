@@ -1,6 +1,7 @@
 package context
 
 import (
+	"achobeta-svc/internal/achobeta-svc-common/lib/tlog"
 	"context"
 
 	"google.golang.org/grpc"
@@ -15,6 +16,7 @@ func UnaryServerInterceptor() grpc.UnaryServerInterceptor {
 		handler grpc.UnaryHandler,
 	) (interface{}, error) {
 		if md, ok := metadata.FromIncomingContext(ctx); ok {
+			tlog.Infof("metadata from incoming context: %+v", md)
 			ctx = metadata.NewOutgoingContext(ctx, md)
 		}
 		return handler(ctx, req)

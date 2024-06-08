@@ -3,6 +3,7 @@ package server
 import (
 	"achobeta-svc/internal/achobeta-svc-api/config"
 	"achobeta-svc/internal/achobeta-svc-api/internal/server/manager"
+	_ "achobeta-svc/internal/achobeta-svc-api/internal/server/middleware"
 	"achobeta-svc/internal/achobeta-svc-api/internal/server/service"
 	"achobeta-svc/internal/achobeta-svc-common/lib/tlog"
 	"fmt"

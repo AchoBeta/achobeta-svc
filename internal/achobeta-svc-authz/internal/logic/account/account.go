@@ -9,6 +9,8 @@ import (
 	"achobeta-svc/internal/achobeta-svc-common/pkg/utils"
 	"context"
 	"fmt"
+
+	"gorm.io/gorm"
 )
 
 type Permission struct {
@@ -28,10 +30,23 @@ func New(db database.Database, c cache.Cache, cas casbin.Casbin) *Permission {
 // CreateAccount 创建账号
 // 方法内部对密码进行加密, 外层调用无需关心加密逻辑
 func (p *Permission) CreateAccount(ctx context.Context, ue *entity.Account) error {
-	ue.ID = uint(utils.GetSnowflakeID())
-	ue.Password = hashPassword(ue.Password)
-	_, err := p.database.Create(&ue)
-	if err != nil {
+	if err := p.database.Transaction(func(trc *gorm.DB) error {
+		ue.ID = uint(utils.GetSnowflakeID())
+		// 创建账号, 设置一个normal的角色
+		if err := trc.Create(&entity.CasbinRule{
+			PType: "g",
+			V0:    fmt.Sprintf("%d", ue.ID),
+			V1:    "normal",
+			V2:    "all",
+		}).Error; err != nil {
+			return err
+		}
+		ue.Password = hashPassword(ue.Password)
+		if err := trc.Create(&ue).Error; err != nil {
+			return err
+		}
+		return nil
+	}); err != nil {
 		return err
 	}
 	tlog.CtxInfof(ctx, "create account, username:[%s], email:[%s], phone:[%s]", ue.Username, ue.Email, ue.Phone)
