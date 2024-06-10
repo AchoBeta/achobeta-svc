@@ -18,3 +18,5 @@ vendor/
 
 # Go workspace file
 go.work
+# process id file
+*.pid

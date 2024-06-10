@@ -22,7 +22,9 @@ func RunServer() {
 	manager.RouteHandler.Register(g)
 
 	// run 在最后
-	err := g.Run(fmt.Sprintf("%s:%d", c.Host, c.Port))
+	runServer := fmt.Sprintf("%s:%d", c.Host, c.Port)
+	tlog.Infof("http api server listen on %s", runServer)
+	err := g.Run(runServer)
 	if err != nil {
 		tlog.Errorf("Listen error: %v", err)
 		panic(err)

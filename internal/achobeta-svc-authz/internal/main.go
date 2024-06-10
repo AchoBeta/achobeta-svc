@@ -39,7 +39,7 @@ func runRPCServer() {
 	svcs := service.InitServices()
 	permissionv1.RegisterAuthzServiceServer(s, svcs.PermissionService)
 	//服务注册
-	tlog.Infof("Listen on %s:%d", c.Host, c.Port)
+	tlog.Infof("Listen on %d", c.Port)
 
 	s.Start()
 	tlog.Infof("server started")
