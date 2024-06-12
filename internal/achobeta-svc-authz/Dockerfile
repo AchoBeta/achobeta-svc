@@ -9,6 +9,7 @@ EXPOSE 4397
 RUN mkdir /app
 WORKDIR /app
 COPY . .
+RUN go mod download
 RUN  go build -o svc-authz-server ./internal/achobeta-svc-authz/internal
 # 把文件复制到当前工作目录
 ADD ./internal/achobeta-svc-authz/config/config.yaml ./config/authz/config.yaml

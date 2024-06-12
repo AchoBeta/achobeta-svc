@@ -9,6 +9,7 @@ EXPOSE 4397
 RUN mkdir /app
 WORKDIR /app
 COPY . .
+RUN go mod download
 RUN  go build -o svc-api-server ./internal/achobeta-svc-api/internal
 # 把文件复制到当前工作目录
 ADD ./internal/achobeta-svc-api/config/config.yaml ./config/api/config.yaml
