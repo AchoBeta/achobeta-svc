@@ -16,7 +16,7 @@ install:
 		github.com/envoyproxy/protoc-gen-validate;
  
 .PHONY: gen
-gen:
+gen: install
 	@rm -rf ./gen
 	@buf dep update proto
 	@buf build proto
