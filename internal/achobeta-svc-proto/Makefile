@@ -24,6 +24,7 @@ install:
  
 .PHONY: gen
 gen: install
+	@go mod tidy
 	@rm -rf ./gen
 	@buf dep update proto
 	@buf build proto
