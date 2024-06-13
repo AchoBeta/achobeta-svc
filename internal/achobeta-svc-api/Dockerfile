@@ -3,10 +3,11 @@ FROM golang:1.22.1 AS builder
 ENV GO111MODULE=on \
     GOPROXY=https://goproxy.cn,direct \
     GIN_MODE=release
-RUN mkdir /app
+    
 WORKDIR /app
-COPY . .
+COPY go.mod go.sum ./
 RUN go mod download
+COPY . .
 RUN  go build -o svc-api-server ./internal/achobeta-svc-api/internal
 
 FROM alpine:latest
