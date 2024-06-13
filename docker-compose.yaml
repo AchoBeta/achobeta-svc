@@ -1,10 +1,10 @@
 services:
   achobeta-svc-authz:
-    container_name: achobeta-svc-authz-1
+    container_name: achobeta-svc-authz
     build:
         context: .
         dockerfile: ./internal/achobeta-svc-authz/Dockerfile
-    image: achobeta/achobeta-svc-authz:latest
+    image: ccr.ccs.tencentyun.com/achobeta/achobeta-svc-authz:latest
     ports:
       - "4396:4396"
     volumes:
@@ -13,11 +13,11 @@ services:
     networks:
       - svc-networks
   achobeta-svc-api: 
-    container_name: achobeta-svc-api-1
+    container_name: achobeta-svc-api
     build: 
       context: .
       dockerfile: ./internal/achobeta-svc-api/Dockerfile
-    image: achobeta/achobeta-svc-api:latest
+    image: ccr.ccs.tencentyun.com/achobeta/achobeta-svc-api:latest
     ports:
       - "4397:4397"
     volumes:
