@@ -20,14 +20,8 @@ proto:
 
 # sub build
 sbuild:
+	@echo $(SERVICE_DIRS)
 	@for dir in $(SERVICE_DIRS); do \
 		$(MAKE) -C $$dir build || exit "$$?"; \
 		echo "Compile $$(basename $$dir) done"; \
-	done
-
-# sub run
-srun:
-	@for dir in $(SERVICE_DIRS); do \
-		$(MAKE) -C $$dir run || exit "$$?"; \
-		echo "Run $$(basename $$dir) done"; \
 	done

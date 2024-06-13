@@ -5,10 +5,8 @@ ENV GO111MODULE=on \
     GIN_MODE=release
 
 WORKDIR /app
-COPY go.mod go.sum ./
-RUN go mod download
 COPY . .
-RUN  go build -o svc-authz-server ./internal/achobeta-svc-authz/internal
+# RUN  go build -o svc-authz-server ./internal/achobeta-svc-authz/internal
 
 FROM alpine:latest
 WORKDIR /app
