@@ -10,7 +10,7 @@ COPY . .
 
 FROM alpine:latest
 WORKDIR /app
-COPY --from=builder /app/svc-api-server .
+COPY ./internal/achobeta-svc-api/svc-api-server .
 COPY ./internal/achobeta-svc-api/config/config.yaml ./config/api/config.yaml
 EXPOSE 4397
 # run the binary

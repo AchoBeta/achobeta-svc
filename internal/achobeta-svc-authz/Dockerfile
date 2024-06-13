@@ -10,7 +10,7 @@ COPY . .
 
 FROM alpine:latest
 WORKDIR /app
-COPY --from=builder /app/svc-authz-server .
+COPY ./internal/achobeta-svc-authz/svc-authz-server .
 ADD ./internal/achobeta-svc-authz/config/config.yaml ./config/authz/config.yaml
 ADD ./internal/achobeta-svc-authz/config/model.conf ./config/authz/model.conf
 EXPOSE 4396

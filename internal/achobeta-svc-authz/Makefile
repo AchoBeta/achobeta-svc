@@ -22,8 +22,8 @@ lint:
 
 build:
 	@echo "Building..."
-	go build -o authz-server ./internal
+	go build -o svc-authz-server ./internal
 run :
 	@echo "Running..."
-	./authz-server  -config ./config/config.yaml -casbin ./config/model.conf
+	./svc-authz-server  -config ./config/config.yaml -casbin ./config/model.conf
 .PHONY: init
