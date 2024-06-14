@@ -32,7 +32,7 @@ jobs:
     #   run: go mod download
 
     # Run linter (assumes you have a linter configured in your Makefile)
-    - ls -al
+    - run: ls -al
     - run: make lint
 
     # # Build the Go project
