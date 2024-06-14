@@ -48,6 +48,6 @@ func (api *AuthzApi) CreateAccount(c *gin.Context) {
 
 func (api *AuthzApi) Ping(c *gin.Context) {
 	c.JSON(200, gin.H{
-		"message": "pong",
+		"message": "pong pong",
 	})
 }
