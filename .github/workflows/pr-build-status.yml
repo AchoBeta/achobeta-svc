@@ -19,18 +19,8 @@ jobs:
       with:
         go-version: '1.22.1'
 
-    - name: Cache Go modules
-      uses: actions/cache@v3
-      with:
-        path: |
-          ~/.cache/go-build
-          ~/go/pkg/mod
-        key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
-        restore-keys: |
-          ${{ runner.os }}-go-
+    - name: Install Buf
+      run: GO111MODULE=on GOBIN=/usr/local/bin go install github.com/bufbuild/buf/cmd/buf@v1.33.0
 
-    - name: Install dependencies
-      run: make install && go mod download
-
-    - name: Run linter
+    - name: lint
       run: make lint
