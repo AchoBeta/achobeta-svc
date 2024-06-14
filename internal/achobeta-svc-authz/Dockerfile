@@ -6,10 +6,6 @@ ENV GO111MODULE=on \
 
 WORKDIR /app
 COPY . .
-# RUN  go build -o svc-authz-server ./internal/achobeta-svc-authz/internal
-
-FROM alpine:latest
-WORKDIR /app
 COPY ./internal/achobeta-svc-authz/svc-authz-server .
 ADD ./internal/achobeta-svc-authz/config/config.yaml ./config/authz/config.yaml
 ADD ./internal/achobeta-svc-authz/config/model.conf ./config/authz/model.conf

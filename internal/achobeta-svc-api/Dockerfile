@@ -6,10 +6,6 @@ ENV GO111MODULE=on \
     
 WORKDIR /app
 COPY . .
-# RUN  go build -o svc-api-server ./internal/achobeta-svc-api/internal
-
-FROM alpine:latest
-WORKDIR /app
 COPY ./internal/achobeta-svc-api/svc-api-server .
 COPY ./internal/achobeta-svc-api/config/config.yaml ./config/api/config.yaml
 EXPOSE 4397
