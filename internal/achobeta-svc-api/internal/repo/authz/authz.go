@@ -19,7 +19,7 @@ type impl struct {
 
 // New creates a new impl repo
 func New() AuthzRepo {
-	conn, err := grpc.NewClient("achobeta-svc-authz-1:4396",
+	conn, err := grpc.NewClient("achobeta-svc-authz:4396",
 		grpc.WithTransportCredentials(insecure.NewCredentials()))
 	if err != nil {
 		panic(err)
