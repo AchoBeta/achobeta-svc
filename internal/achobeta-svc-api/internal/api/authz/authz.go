@@ -34,13 +34,12 @@ func (api *AuthzApi) CreateAccount(c *gin.Context) {
 	r := web.NewResponse(c)
 	cap := &entity.CreateAccountParams{}
 	if err := c.ShouldBindJSON(cap); err != nil {
-		tlog.CtxErrorf(c.Request.Context(), "bind json error: %v", err)
-		c.Error(err)
+		tlog.CtxErrorf(c.Request.Context(), "bind json error: %v", c.Error(err))
 		return
 	}
 	id, err := api.authLogic.CreateAccount(c.Request.Context(), cap)
 	if err != nil {
-		c.Error(err)
+		tlog.CtxErrorf(c.Request.Context(), "create account error: %v", c.Error(err))
 		return
 	}
 	r.Success(id)
