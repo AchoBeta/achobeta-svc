@@ -30,7 +30,13 @@ jobs:
           ${{ runner.os }}-go-
 
     - name: Install dependencies
-      run: make install && go mod download
+      run: make install
+
+    - name: build proto
+    - run: make proto
+
+    - name: build go env
+      run: go mod tidy
 
     - name: Run linter
       run: make lint
