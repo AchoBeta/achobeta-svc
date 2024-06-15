@@ -1,8 +1,6 @@
 lint:
-	# 简化 go mod 文件
-	go mod tidy
-	# 校验代码规范
 	golangci-lint run --fix
+	@echo "lint achobeta-svc-authz done"
 
 init_hook:
 	git config core.hooksPath ./hooks

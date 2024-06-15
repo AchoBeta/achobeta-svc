@@ -1,23 +1,42 @@
 name: build status
+
 on:
   pull_request:
     branches:
     - feature
     - master
+
 jobs:
   publish:
     runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v4
 
-    # Setup Go environment
-    - name: Setup Go
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup Go environment
       uses: actions/setup-go@v4
       with:
         go-version: '1.22.1'
 
-    - name: Install Buf
-      run: GO111MODULE=on GOBIN=/usr/local/bin go install github.com/bufbuild/buf/cmd/buf@v1.33.0
+    - name: Cache Go modules
+      uses: actions/cache@v3
+      with:
+        path: |
+          ~/.cache/go-build
+          ~/go/pkg/mod
+        key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
+        restore-keys: |
+          ${{ runner.os }}-go-
 
-    - name: lint
+    - name: Install dependencies
+      run: make install
+
+    - name: build proto
+      run: make proto
+
+    - name: build go env
+      run: go mod tidy
+
+    - name: Run linter
       run: make lint
