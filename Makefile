@@ -19,6 +19,7 @@ install:
         GOBIN=/usr/local/bin \
     		go install github.com/bufbuild/buf/cmd/buf@v1.33.0
 	@go install github.com/golangci/golangci-lint/cmd/golangci-lint@latest
+	@$(MAKE) -C $(PROTO_DIR) install
 
 lint: 
 	@echo "Linting proto..."
