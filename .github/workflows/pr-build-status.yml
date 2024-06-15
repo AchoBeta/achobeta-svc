@@ -33,7 +33,7 @@ jobs:
       run: make install
 
     - name: build proto
-    - run: make proto
+      run: make proto
 
     - name: build go env
       run: go mod tidy
