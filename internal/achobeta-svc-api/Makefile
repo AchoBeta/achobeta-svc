@@ -1,6 +1,6 @@
 lint:
-	go mod tidy
 	golangci-lint run --fix
+	@echo "lint achobeta-svc-authz done"
 
 init_hook:
 	git config core.hooksPath ./hooks

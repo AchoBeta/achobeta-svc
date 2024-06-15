@@ -14,12 +14,10 @@ wire:
 	@echo "wire successfully!"
 	
 lint:
-	@# 简化 go mod 文件
-	@go mod tidy
-	@# 校验代码规范
+	@echo "authz Linting..."
 	golangci-lint run --fix
-	@echo "Lint done"
-
+	@echo "lint achobeta-svc-authz done"
+	
 build:
 	@echo "Building..."
 	go build -o svc-authz-server ./internal

@@ -25,7 +25,6 @@ lint:
 	@$(MAKE) -C $(PROTO_DIR) lint
 	@for dir in $(SERVICE_DIRS); do \
 		$(MAKE) -C $$dir lint || exit "$$?"; \
-		echo "Compile $$(basename $$dir) done"; \
 	done
 
 

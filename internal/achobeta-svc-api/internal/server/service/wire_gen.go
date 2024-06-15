@@ -7,7 +7,7 @@
 package service
 
 import (
-	"achobeta-svc/internal/achobeta-svc-api/internal/api/authz"
+	auth_api "achobeta-svc/internal/achobeta-svc-api/internal/api/authz"
 	"achobeta-svc/internal/achobeta-svc-api/internal/logic/auth"
 	"achobeta-svc/internal/achobeta-svc-api/internal/repo/authz"
 )
