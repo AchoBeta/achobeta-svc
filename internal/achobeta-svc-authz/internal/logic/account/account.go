@@ -9,6 +9,7 @@ import (
 	"achobeta-svc/internal/achobeta-svc-common/pkg/utils"
 	"context"
 	"fmt"
+	"strconv"
 
 	"gorm.io/gorm"
 )
@@ -88,9 +89,13 @@ func (p *Permission) Login(ctx context.Context, req *entity.LoginRequest) (strin
 		p.database.Get().Where("username = ?", req.LoginKey).First(&account)
 		if utils.ComparePasswords(account.Password, req.LoginPwd) {
 			cb := &entity.CasbinRule{}
-			p.database.Get().Where("ptype = ?", "p").Where("v0 = ?", account.UserId).Find(&cb)
+			if row := p.database.Get().Where("ptype = ?", "g").Where(
+				"v0 = ?", account.ID).Find(&cb).RowsAffected; row == 0 {
+				return "", fmt.Errorf("no records found for Casbin, please check the data")
+			}
 			// ptype, v0(userid), v1(domain), v2(object), v3(action)
 			token, err := p.casbin.CreateToken(cb.V0, cb.V1, cb.V2, cb.V3)
+			err = p.cache.Set(ctx, token, strconv.Itoa(int(account.ID)))
 			if err != nil {
 				tlog.CtxErrorf(ctx, "create token error: %v", err)
 				return "", err

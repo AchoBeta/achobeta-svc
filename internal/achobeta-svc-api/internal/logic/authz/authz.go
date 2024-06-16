@@ -33,11 +33,12 @@ func (al *Logic) CreateAccount(ctx context.Context, req *entity.CreateAccountPar
 }
 
 func (al *Logic) Login(ctx context.Context, req *entity.LoginAccountParams) (string, error) {
+	tlog.CtxInfof(ctx, "%+v", req)
 	resp, err := al.az.Login(ctx, &permissionv1.LoginRequest{
-		Username:  &req.Username,
-		Password:  &req.Password,
-		Email:     &req.Email,
-		Phone:     &req.Phone,
+		Username:  req.Username,
+		Password:  req.Password,
+		Email:     req.Email,
+		Phone:     req.Phone,
 		LoginType: req.LoginType,
 	})
 	if err != nil {

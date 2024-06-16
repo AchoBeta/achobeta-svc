@@ -83,22 +83,24 @@ func (p *ServiceServer) Login(ctx context.Context, req *permissionv1.LoginReques
 }
 
 func buildLoginRequest(req *permissionv1.LoginRequest) (*entity.LoginRequest, error) {
-	if checkLoginParams(req) {
+	if !checkLoginParams(req) {
 		return nil, fmt.Errorf("login params error")
 	}
-	var loginKey string
-	if req.LoginType == permissionv1.LoginType_LOGIN_TYPE_USERNAME {
-		loginKey = req.GetUsername()
-	} else if req.LoginType == permissionv1.LoginType_LOGIN_TYPE_PHONE {
-		loginKey = req.GetPhone()
-	} else if req.LoginType == permissionv1.LoginType_LOGIN_TYPE_EMAIL {
-		loginKey = req.GetEmail()
-	}
-	return &entity.LoginRequest{
-		LoginKey: loginKey,
+	res := &entity.LoginRequest{
 		LoginPwd: req.GetPassword(),
-		Type:     converLoginType(req.GetLoginType()),
-	}, nil
+	}
+	switch req.LoginType {
+	case permissionv1.LoginType_LOGIN_TYPE_USERNAME:
+		res.LoginKey = req.GetUsername()
+		res.Type = entity.LoginTypeUsername
+	case permissionv1.LoginType_LOGIN_TYPE_PHONE:
+		res.LoginKey = req.GetUsername()
+		res.Type = entity.LoginTypePhone
+	case permissionv1.LoginType_LOGIN_TYPE_EMAIL:
+		res.LoginKey = req.GetEmail()
+		res.Type = entity.LoginTypeEmail
+	}
+	return res, nil
 }
 
 func checkLoginParams(req *permissionv1.LoginRequest) bool {
@@ -109,15 +111,4 @@ func checkLoginParams(req *permissionv1.LoginRequest) bool {
 		return false
 	}
 	return true
-}
-func converLoginType(t permissionv1.LoginType) entity.LoginType {
-	switch t {
-	case permissionv1.LoginType_LOGIN_TYPE_USERNAME:
-		return entity.LoginTypeUsername
-	case permissionv1.LoginType_LOGIN_TYPE_PHONE:
-		return entity.LoginTypePhone
-	case permissionv1.LoginType_LOGIN_TYPE_EMAIL:
-		return entity.LoginTypeEmail
-	}
-	return entity.LoginTypeUsername
 }
