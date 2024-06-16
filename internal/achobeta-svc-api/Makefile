@@ -18,10 +18,10 @@ install:
 init: init_hook install
 	@echo "Init done!"
 
-
+arch ?= $(shell uname -m)
 build:
 	@echo "Building..."
-	go build -o svc-api-server ./internal
+	CGO_ENABLED=0  GOOS=linux  GOARCH=$(arch) go build -o svc-api-server ./internal
 
 run :
 	@echo "Running..."

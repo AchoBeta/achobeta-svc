@@ -7,8 +7,8 @@
 package service
 
 import (
-	auth_api "achobeta-svc/internal/achobeta-svc-api/internal/api/authz"
-	"achobeta-svc/internal/achobeta-svc-api/internal/logic/auth"
+	authapi "achobeta-svc/internal/achobeta-svc-api/internal/api/authz"
+	authlogic "achobeta-svc/internal/achobeta-svc-api/internal/logic/authz"
 	"achobeta-svc/internal/achobeta-svc-api/internal/repo/authz"
 
 	"github.com/google/wire"
@@ -19,9 +19,9 @@ import (
 func InitServices() *Apis {
 	wire.Build(newApiService,
 		// services
-		auth_api.NewAuthApi,
+		authapi.NewAuthApi,
 		// logic
-		auth.NewLogic,
+		authlogic.NewLogic,
 		// repo
 		authz.New)
 	return &Apis{}

@@ -1,6 +1,6 @@
 package entity
 
-// casbin rule
+// CasbinRule casbin rule
 type CasbinRule struct {
 	ID    uint   `json:"id" gorm:"primarykey"`
 	PType string `json:"p_type" gorm:"column:ptype"`

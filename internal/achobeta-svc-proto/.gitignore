@@ -19,6 +19,6 @@ deps/*
 server
 # Dependency directories (remove the comment below to include it)
 # vendor/
-
+gen/
 # Go workspace file
 go.work
