@@ -10,6 +10,7 @@ import (
 	"context"
 	"fmt"
 	"strconv"
+	"time"
 
 	"gorm.io/gorm"
 )
@@ -95,7 +96,7 @@ func (p *Permission) Login(ctx context.Context, req *entity.LoginRequest) (strin
 			}
 			// ptype, v0(userid), v1(domain), v2(object), v3(action)
 			token, err := p.casbin.CreateToken(cb.V0, cb.V1, cb.V2, cb.V3)
-			err = p.cache.Set(ctx, token, strconv.Itoa(int(account.ID)))
+			_ = p.cache.Set(ctx, token, strconv.Itoa(int(account.ID)), 30*time.Minute)
 			if err != nil {
 				tlog.CtxErrorf(ctx, "create token error: %v", err)
 				return "", err

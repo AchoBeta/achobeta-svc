@@ -4,6 +4,7 @@ import (
 	"achobeta-svc/internal/achobeta-svc-authz/config"
 	"context"
 	"fmt"
+	"time"
 
 	redis "github.com/redis/go-redis/v9"
 )
@@ -11,7 +12,7 @@ import (
 // Cache is an interface
 type Cache interface {
 	Get(ctx context.Context, key string) (string, error)
-	Set(ctx context.Context, key string, value string) error
+	Set(ctx context.Context, key string, value string, expiration time.Duration) error
 }
 
 type impl struct {
@@ -32,6 +33,6 @@ func (i *impl) Get(ctx context.Context, key string) (string, error) {
 	return i.cli.Get(ctx, key).Result()
 }
 
-func (i *impl) Set(ctx context.Context, key string, value string) error {
-	return i.cli.Set(ctx, key, value, 0).Err()
+func (i *impl) Set(ctx context.Context, key string, value string, expiration time.Duration) error {
+	return i.cli.Set(ctx, key, value, expiration).Err()
 }
