@@ -10,25 +10,25 @@ import (
 	"fmt"
 )
 
-type PermissionServiceServer struct {
+type ServiceServer struct {
 	// UnimplementedAuthzServiceServer这个结构体是必须要内嵌进来的
 	// 嵌入之后，我们就已经实现了GRPC这个服务的接口，但是实现之后我们什么都没做，没有写自己的业务逻辑，
 	// 我们要重写实现的这个接口里的函数，这样才能提供一个真正的rpc的能力。
 	permissionv1.UnimplementedAuthzServiceServer
 	// pms 是logic 层的部分, 用于处理业务逻辑
 	pms *account.Permission
-	ul  *user.UserLogic
+	ul  *user.Logic
 }
 
-func NewPermissionService(p *account.Permission, u *user.UserLogic) *PermissionServiceServer {
-	return &PermissionServiceServer{
+func NewPermissionService(p *account.Permission, u *user.Logic) *ServiceServer {
+	return &ServiceServer{
 		pms: p,
 		ul:  u,
 	}
 }
 
 // CreateAccount 创建账号接口
-func (p *PermissionServiceServer) CreateAccount(ctx context.Context, req *permissionv1.CreateAccountRequest) (*permissionv1.CreateAccountResponse, error) {
+func (p *ServiceServer) CreateAccount(ctx context.Context, req *permissionv1.CreateAccountRequest) (*permissionv1.CreateAccountResponse, error) {
 	// 创建账号前, 先创建角色, 这里是mock一个虚拟的角色, 后续更新
 	uid, err := p.ul.CreateUser(ctx, entity.MockUser())
 	if err != nil {
@@ -52,7 +52,7 @@ func (p *PermissionServiceServer) CreateAccount(ctx context.Context, req *permis
 	return resp, nil
 }
 
-func (p *PermissionServiceServer) VerifyToken(ctx context.Context, req *permissionv1.VerifyTokenRequest) (*permissionv1.VerifyTokenResponse, error) {
+func (p *ServiceServer) VerifyToken(ctx context.Context, req *permissionv1.VerifyTokenRequest) (*permissionv1.VerifyTokenResponse, error) {
 	tlog.CtxInfof(ctx, "VerifyToken request: %s", req.GetToken())
 	vaild, err := p.pms.CheckToken(ctx, req.Token)
 	if err != nil {
@@ -64,7 +64,7 @@ func (p *PermissionServiceServer) VerifyToken(ctx context.Context, req *permissi
 	}, nil
 }
 
-func (p *PermissionServiceServer) Login(ctx context.Context, req *permissionv1.LoginRequest) (*permissionv1.LoginResponse, error) {
+func (p *ServiceServer) Login(ctx context.Context, req *permissionv1.LoginRequest) (*permissionv1.LoginResponse, error) {
 	// 构建登录请求
 	loginReq, err := buildLoginRequest(req)
 	if err != nil {

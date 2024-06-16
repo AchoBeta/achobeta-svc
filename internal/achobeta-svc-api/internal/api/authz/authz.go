@@ -1,8 +1,8 @@
-package auth_api
+package authz
 
 import (
 	"achobeta-svc/internal/achobeta-svc-api/internal/entity"
-	"achobeta-svc/internal/achobeta-svc-api/internal/logic/auth"
+	"achobeta-svc/internal/achobeta-svc-api/internal/logic/authz"
 	"achobeta-svc/internal/achobeta-svc-api/internal/server/manager"
 	"achobeta-svc/internal/achobeta-svc-common/lib/tlog"
 	"achobeta-svc/internal/achobeta-svc-common/pkg/web"
@@ -10,27 +10,27 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-type AuthzApi struct {
-	authLogic *auth.AuthzLogic
+type Api struct {
+	authLogic *authz.Logic
 }
 
-func NewAuthApi(al *auth.AuthzLogic) *AuthzApi {
-	api := &AuthzApi{
+func NewAuthApi(al *authz.Logic) *Api {
+	api := &Api{
 		authLogic: al,
 	}
 	RegisterRouter(api)
 	return api
 }
 
-func RegisterRouter(api *AuthzApi) {
+func RegisterRouter(api *Api) {
 	manager.RouteHandler.RegisterRouter(manager.LEVEL_GLOBAL, func(h *gin.RouterGroup) {
 		h.GET("/ping", api.Ping)
-
 		h.POST("/create", api.CreateAccount)
+		h.POST("/login", api.Login)
 	})
 }
 
-func (api *AuthzApi) CreateAccount(c *gin.Context) {
+func (api *Api) CreateAccount(c *gin.Context) {
 	r := web.NewResponse(c)
 	cap := &entity.CreateAccountParams{}
 	if err := c.ShouldBindJSON(cap); err != nil {
@@ -45,7 +45,22 @@ func (api *AuthzApi) CreateAccount(c *gin.Context) {
 	r.Success(id)
 }
 
-func (api *AuthzApi) Ping(c *gin.Context) {
+func (api *Api) Login(c *gin.Context) {
+	r := web.NewResponse(c)
+	lap := &entity.LoginAccountParams{}
+	if err := c.ShouldBindJSON(lap); err != nil {
+		tlog.CtxErrorf(c.Request.Context(), "bind json error: %v", c.Error(err))
+		return
+	}
+	token, err := api.authLogic.Login(c.Request.Context(), lap)
+	if err != nil {
+		tlog.CtxErrorf(c.Request.Context(), "login error: %v", c.Error(err))
+		return
+	}
+	r.Success(token)
+}
+
+func (api *Api) Ping(c *gin.Context) {
 	c.JSON(200, gin.H{
 		"message": "pong pong",
 	})

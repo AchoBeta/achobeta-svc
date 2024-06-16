@@ -10,20 +10,20 @@ import (
 	"fmt"
 )
 
-type UserLogic struct {
+type Logic struct {
 	database database.Database
 	cache    cache.Cache
 }
 
-func New(db database.Database, c cache.Cache) *UserLogic {
-	return &UserLogic{
+func New(db database.Database, c cache.Cache) *Logic {
+	return &Logic{
 		database: db,
 		cache:    c,
 	}
 }
 
-// Create 创建用户
-func (u *UserLogic) CreateUser(ctx context.Context, user *entity.User) (uint, error) {
+// CreateUser  创建用户
+func (u *Logic) CreateUser(ctx context.Context, user *entity.User) (uint, error) {
 	if _, err := u.database.Create(user); err != nil {
 		tlog.CtxErrorf(ctx, "create user error: %v", err)
 		return 0, err
@@ -31,7 +31,7 @@ func (u *UserLogic) CreateUser(ctx context.Context, user *entity.User) (uint, er
 	return user.ID, nil
 }
 
-func (u *UserLogic) Modify(ctx context.Context, user *entity.User) error {
+func (u *Logic) Modify(ctx context.Context, user *entity.User) error {
 	if user == nil {
 		return fmt.Errorf("modify user error, user is nil")
 	}
@@ -42,7 +42,7 @@ func (u *UserLogic) Modify(ctx context.Context, user *entity.User) error {
 	return nil
 }
 
-func (u *UserLogic) Query(ctx context.Context, user *entity.User) error {
+func (u *Logic) Query(ctx context.Context, user *entity.User) error {
 	if err := u.database.Get().Where(user).First(user).Error; err != nil {
 		tlog.CtxErrorf(ctx, "query user error: %v", err)
 		return err

@@ -78,8 +78,8 @@ func (p *Permission) CheckToken(ctx context.Context, token string) (bool, error)
 		tlog.CtxErrorf(ctx, "verify token error: %v", err)
 		return false, err
 	}
-	isVaild := p.casbin.Check(claims["userId"].(string), claims["domain"].(string), claims["object"].(string), claims["action"].(string))
-	return isVaild, nil
+	isValid := p.casbin.Check(claims["userId"].(string), claims["domain"].(string), claims["object"].(string), claims["action"].(string))
+	return isValid, nil
 }
 
 func (p *Permission) Login(ctx context.Context, req *entity.LoginRequest) (string, error) {

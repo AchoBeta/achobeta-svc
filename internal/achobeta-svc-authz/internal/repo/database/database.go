@@ -7,7 +7,7 @@ import (
 	"gorm.io/gorm"
 )
 
-// Cache is an interface
+// Database Cache is an interface
 type Database interface {
 	Get() *gorm.DB
 	Create(model any) (*sql.Rows, error)
