@@ -17,10 +17,12 @@ lint:
 	@echo "authz Linting..."
 	golangci-lint run --fix
 	@echo "lint achobeta-svc-authz done"
-	
+
+arch ?= $(shell uname -m)
 build:
-	@echo "Building..."
-	go build -o svc-authz-server ./internal
+	@echo "Building svc-authz..."
+	CGO_ENABLED=0  GOOS=linux  GOARCH=$(arch) go build -o svc-authz-server ./internal
+
 run :
 	@echo "Running..."
 	./svc-authz-server  -config ./config/config.yaml -casbin ./config/model.conf

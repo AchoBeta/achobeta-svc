@@ -15,7 +15,9 @@ install:
 	go get github.com/envoyproxy/protoc-gen-validate/templates/java@v1.0.4
 	go get github.com/lyft/protoc-gen-star/v2@latest
 	go get github.com/iancoleman/strcase@latest
-	go install \
+	GO111MODULE=on GOBIN=/usr/local/bin \
+		go install \
+		github.com/bufbuild/buf/cmd/buf@v1.33.0 \
 		github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-grpc-gateway \
 		github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-openapiv2 \
 		google.golang.org/protobuf/cmd/protoc-gen-go \
