@@ -9,8 +9,8 @@ EXCLUDE_DIRS := $(COMMON_DIR) $(PROTO_DIR)
 SERVICE_DIRS := $(filter-out $(EXCLUDE_DIRS), $(wildcard $(INTERNAL_DIR)/*))
 #define params
 arch ?= $(shell uname -m)
-ifeq($arch, x86_64)
-	arch=amd64
+ifeq ($(arch),x86_64)
+	arch := amd64
 endif
 # define function
 define FOREACH_SERVICE
