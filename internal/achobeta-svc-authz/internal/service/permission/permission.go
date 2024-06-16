@@ -54,13 +54,13 @@ func (p *ServiceServer) CreateAccount(ctx context.Context, req *permissionv1.Cre
 
 func (p *ServiceServer) VerifyToken(ctx context.Context, req *permissionv1.VerifyTokenRequest) (*permissionv1.VerifyTokenResponse, error) {
 	tlog.CtxInfof(ctx, "VerifyToken request: %s", req.GetToken())
-	vaild, err := p.pms.CheckToken(ctx, req.Token)
+	valid, err := p.pms.CheckToken(ctx, req.Token)
 	if err != nil {
 		tlog.CtxErrorf(ctx, "CheckToken err: %v", err)
 		return nil, err
 	}
 	return &permissionv1.VerifyTokenResponse{
-		Valid: vaild,
+		Valid: valid,
 	}, nil
 }
 

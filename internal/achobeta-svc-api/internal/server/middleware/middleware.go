@@ -1,20 +1,25 @@
 package middleware
 
 import (
+	"achobeta-svc/internal/achobeta-svc-api/internal/repo/authz"
 	"achobeta-svc/internal/achobeta-svc-api/internal/server/manager"
 	"achobeta-svc/internal/achobeta-svc-common/lib/tlog"
 	"achobeta-svc/internal/achobeta-svc-common/pkg/constant"
 	"achobeta-svc/internal/achobeta-svc-common/pkg/web"
+	permissionv1 "achobeta-svc/internal/achobeta-svc-proto/gen/go/authz/permission/v1"
+	"fmt"
 
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
 	"go.uber.org/zap"
 )
 
+var authService = authz.New()
+
 func init() {
 	manager.RouteHandler.RegisterMiddleware(manager.LEVEL_GLOBAL, AddTraceId, false)
 	manager.RouteHandler.RegisterMiddleware(manager.LEVEL_GLOBAL, ErrorHandler, false)
-	// web.RouteHandler.RegisterMiddleware(web.LEVEL_V1, CheckToken, true)
+	manager.RouteHandler.RegisterMiddleware(manager.LEVEL_GLOBAL, VerifyToken, false)
 }
 
 func AddTraceId() gin.HandlerFunc {
@@ -28,6 +33,28 @@ func AddTraceId() gin.HandlerFunc {
 		c.Request = c.Request.WithContext(ctx)
 		c.Keys = map[string]any{
 			"traceId": traceId,
+		}
+		c.Next()
+	}
+}
+func VerifyToken() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		token := c.GetHeader(string(constant.RequestHeaderKeyToken))
+		if token == "" {
+			_ = c.AbortWithError(constant.TOKEN_IS_NULL.Code, fmt.Errorf(constant.TOKEN_IS_NULL.Msg))
+			return
+		}
+
+		resp, err := authService.VerifyToken(c.Request.Context(), &permissionv1.VerifyTokenRequest{
+			Token: token,
+		})
+		if err != nil {
+			_ = c.AbortWithError(constant.TOKEN_IS_INVALID.Code, fmt.Errorf(constant.TOKEN_IS_INVALID.Msg))
+			return
+		}
+		if !resp.Valid {
+			_ = c.AbortWithError(constant.TOKEN_INSUFFICENT_PERMISSIONS.Code, fmt.Errorf(constant.TOKEN_INSUFFICENT_PERMISSIONS.Msg))
+			return
 		}
 		c.Next()
 	}

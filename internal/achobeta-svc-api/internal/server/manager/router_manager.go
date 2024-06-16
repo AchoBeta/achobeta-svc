@@ -79,7 +79,7 @@ func (rm *RouteManager) RegisterRouter(level RouteLevel, router PathHandler) {
 	rm.Routes[level].Path = append(rm.Routes[level].Path, router)
 }
 
-// @title RegisterMiddleware
+// RegisterMiddleware
 // @description 注册中间件
 // @param level RouteLevel 路由级别
 // @param middleware Middleware 中间件

@@ -5,8 +5,6 @@ import (
 	"achobeta-svc/internal/achobeta-svc-authz/internal/entity"
 	"achobeta-svc/internal/achobeta-svc-common/lib/tlog"
 	"flag"
-	"fmt"
-
 	"github.com/casbin/casbin/v2"
 	gormadapter "github.com/casbin/gorm-adapter/v3"
 	jwt "github.com/dgrijalva/jwt-go"
@@ -48,10 +46,7 @@ func initCasbin() *casbin.Enforcer {
 }
 
 func loadDBConfig() *gormadapter.Adapter {
-	dm := config.Get().Database.Mysql
-	dsn := fmt.Sprintf("%s:%s@tcp(%s:%d)/%s", dm.Username, dm.Password, dm.Host, dm.Port, dm.Database)
-	adapter, err := gormadapter.NewAdapter("mysql", dsn, true)
-	// adapter, err := gormadapter.NewAdapterByDBWithCustomTable(db, &entity.CasbinRule{})
+	adapter, err := gormadapter.NewAdapterByDBWithCustomTable(config.GetDB(), &entity.CasbinRule{})
 	if err != nil {
 		tlog.Errorf("load db config error: %s", err.Error())
 		panic(err)

@@ -9,7 +9,7 @@ import (
 
 var secretKey = []byte("btk.AchoBeta7VZD1dar")
 
-func (c *impl) CreateToken(sub, dom, obj, act string) (string, error) {
+func (c *impl) CreateToken(sub, obj, dom, act string) (string, error) {
 	// 创建负载
 	payload := jwt.MapClaims{
 		"userId":  sub,

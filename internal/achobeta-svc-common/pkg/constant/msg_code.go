@@ -13,9 +13,10 @@ var (
 	COMMON_FAIL = MsgCode{-4396, "失败"}
 
 	/* 请求错误 <0 */
-	TOKEN_IS_EXPIRED = MsgCode{-2, "token已过期"}
-	TOKEN_IS_INVALID = MsgCode{-3, "token无效"}
-	TOKEN_IS_NULL    = MsgCode{-4, "token为空"}
+	TOKEN_IS_EXPIRED              = MsgCode{-2, "token已过期"}
+	TOKEN_IS_INVALID              = MsgCode{-3, "token无效"}
+	TOKEN_IS_NULL                 = MsgCode{-4, "token为空"}
+	TOKEN_INSUFFICENT_PERMISSIONS = MsgCode{-5, "token 权限不足"}
 
 	/* 内部错误 600 ~ 999 */
 	INTERNAL_ERROR             = MsgCode{601, "内部错误, check log"}
@@ -35,7 +36,7 @@ var (
 	USER_CREDENTIALS_ERROR     = MsgCode{2004, "密码错误"}
 	USER_ACCOUNT_ALREADY_EXIST = MsgCode{2008, "账号已存在"}
 	CAPTCHA_ERROR              = MsgCode{2100, "验证码错误"}
-	INSUFFICENT_PERMISSIONS    = MsgCode{2200, "权限不足"}
+	INSUFFICENT_PERMISSIONS    = MsgCode{-2200, "权限不足"}
 
 	/*
 	 USER_NOT_LOGIN(2001, "用户未登录"),

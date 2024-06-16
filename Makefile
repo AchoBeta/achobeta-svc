@@ -47,7 +47,7 @@ lint:
 
 # docker 启动服务
 docker-run: build
-	@docker-compose up
+	@docker-compose up --build
 
 # 通过参数确定启动的服务
 run: run-$(target)
