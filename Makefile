@@ -9,6 +9,9 @@ EXCLUDE_DIRS := $(COMMON_DIR) $(PROTO_DIR)
 SERVICE_DIRS := $(filter-out $(EXCLUDE_DIRS), $(wildcard $(INTERNAL_DIR)/*))
 #define params
 arch ?= $(shell uname -m)
+ifeq($arch, x86_64)
+	arch=amd64
+endif
 # define function
 define FOREACH_SERVICE
 	@for dir in $(SERVICE_DIRS); do \
@@ -41,6 +44,10 @@ lint:
 	@echo "Linting proto..."
 	@$(MAKE) -C $(PROTO_DIR) lint
 	$(call FOREACH_SERVICE, lint)
+
+# docker 启动服务
+docker-run: build
+	@docker-compose up
 
 # 通过参数确定启动的服务
 run: run-$(target)
