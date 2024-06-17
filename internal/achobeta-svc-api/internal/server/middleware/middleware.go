@@ -17,9 +17,9 @@ import (
 var authService = authz.New()
 
 func init() {
-	manager.RouteHandler.RegisterMiddleware(manager.LEVEL_GLOBAL, AddTraceId, false)
-	manager.RouteHandler.RegisterMiddleware(manager.LEVEL_GLOBAL, ErrorHandler, false)
-	manager.RouteHandler.RegisterMiddleware(manager.LEVEL_GLOBAL, VerifyToken, false)
+	manager.RouteHandler.RegisterMiddleware(manager.LevelAnonymous, AddTraceId, false)
+	manager.RouteHandler.RegisterMiddleware(manager.LevelAnonymous, ErrorHandler, false)
+	manager.RouteHandler.RegisterMiddleware(manager.LevelAnonymous, VerifyToken, false)
 }
 
 func AddTraceId() gin.HandlerFunc {

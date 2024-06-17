@@ -23,8 +23,7 @@ func NewAuthApi(al *authz.Logic) *Api {
 }
 
 func RegisterRouter(api *Api) {
-	manager.RouteHandler.RegisterRouter(manager.LEVEL_GLOBAL, func(h *gin.RouterGroup) {
-		h.GET("/ping", api.Ping)
+	manager.RouteHandler.RegisterRouter(manager.LevelAnonymous, func(h *gin.RouterGroup) {
 		h.POST("/create", api.CreateAccount)
 		h.POST("/login", api.Login)
 	})
@@ -58,10 +57,4 @@ func (api *Api) Login(c *gin.Context) {
 		return
 	}
 	r.Success(token)
-}
-
-func (api *Api) Ping(c *gin.Context) {
-	c.JSON(200, gin.H{
-		"message": "pong pong",
-	})
 }
