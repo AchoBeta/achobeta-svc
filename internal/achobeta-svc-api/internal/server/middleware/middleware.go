@@ -2,7 +2,7 @@ package middleware
 
 import (
 	"achobeta-svc/internal/achobeta-svc-api/internal/repo/authz"
-	"achobeta-svc/internal/achobeta-svc-api/internal/server/manager"
+	"achobeta-svc/internal/achobeta-svc-api/internal/server/route"
 	"achobeta-svc/internal/achobeta-svc-common/lib/tlog"
 	"achobeta-svc/internal/achobeta-svc-common/pkg/constant"
 	"achobeta-svc/internal/achobeta-svc-common/pkg/web"
@@ -17,9 +17,9 @@ import (
 var authService = authz.New()
 
 func init() {
-	manager.RouteHandler.RegisterMiddleware(manager.LevelAnonymous, AddTraceId, false)
-	manager.RouteHandler.RegisterMiddleware(manager.LevelAnonymous, ErrorHandler, false)
-	manager.RouteHandler.RegisterMiddleware(manager.LevelAnonymous, VerifyToken, false)
+	route.GetRouter().RegisterMiddleware(route.LevelAnonymous, AddTraceId)
+	route.GetRouter().RegisterMiddleware(route.LevelAnonymous, VerifyToken)
+	route.GetRouter().RegisterMiddleware(route.LevelAnonymous, ErrorHandler)
 }
 
 func AddTraceId() gin.HandlerFunc {

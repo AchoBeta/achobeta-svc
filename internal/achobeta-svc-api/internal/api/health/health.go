@@ -1,7 +1,7 @@
 package health
 
 import (
-	"achobeta-svc/internal/achobeta-svc-api/internal/server/manager"
+	"achobeta-svc/internal/achobeta-svc-api/internal/server/route"
 	"github.com/gin-gonic/gin"
 )
 
@@ -14,13 +14,13 @@ func NewHealthApi() *Api {
 	return api
 }
 func RegisterRouter(api *Api) {
-	manager.RouteHandler.RegisterRouter(manager.LevelAnonymous, func(h *gin.RouterGroup) {
+	route.GetRouter().RegisterRouter(route.LevelAnonymous, func(h *gin.RouterGroup) {
 		h.GET("/ping", api.Ping)
 	})
-	manager.RouteHandler.RegisterRouter(manager.LevelNormal, func(h *gin.RouterGroup) {
+	route.GetRouter().RegisterRouter(route.LevelNormal, func(h *gin.RouterGroup) {
 		h.GET("/normal/ping", api.Ping2)
 	})
-	manager.RouteHandler.RegisterRouter(manager.LevelAdmin, func(h *gin.RouterGroup) {
+	route.GetRouter().RegisterRouter(route.LevelAdmin, func(h *gin.RouterGroup) {
 		h.GET("/normal/ping", api.Ping3)
 	})
 }

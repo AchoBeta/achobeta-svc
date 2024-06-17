@@ -3,7 +3,7 @@ package authz
 import (
 	"achobeta-svc/internal/achobeta-svc-api/internal/entity"
 	"achobeta-svc/internal/achobeta-svc-api/internal/logic/authz"
-	"achobeta-svc/internal/achobeta-svc-api/internal/server/manager"
+	"achobeta-svc/internal/achobeta-svc-api/internal/server/route"
 	"achobeta-svc/internal/achobeta-svc-common/lib/tlog"
 	"achobeta-svc/internal/achobeta-svc-common/pkg/web"
 
@@ -23,7 +23,7 @@ func NewAuthApi(al *authz.Logic) *Api {
 }
 
 func RegisterRouter(api *Api) {
-	manager.RouteHandler.RegisterRouter(manager.LevelAnonymous, func(h *gin.RouterGroup) {
+	route.GetRouter().RegisterRouter(route.LevelAnonymous, func(h *gin.RouterGroup) {
 		h.POST("/create", api.CreateAccount)
 		h.POST("/login", api.Login)
 	})
