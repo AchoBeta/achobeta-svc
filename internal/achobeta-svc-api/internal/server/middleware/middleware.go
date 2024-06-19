@@ -17,9 +17,17 @@ import (
 var authService = authz.New()
 
 func init() {
-	route.GetRouter().RegisterMiddleware(route.LevelAnonymous, AddTraceId)
-	route.GetRouter().RegisterMiddleware(route.LevelAnonymous, VerifyToken)
-	route.GetRouter().RegisterMiddleware(route.LevelAnonymous, ErrorHandler)
+
+	// anonymous
+	route.GetRouter().RegisterMiddleware(route.LevelAnonymous,
+		// middlewares
+		AddTraceId, ErrorHandler)
+	// normal
+	route.GetRouter().RegisterMiddleware(route.LevelNormal,
+		// middlewares
+		AddTraceId, ErrorHandler, VerifyTokenNormal)
+	route.GetRouter().RegisterMiddleware(route.LevelAdmin,
+		AddTraceId, ErrorHandler)
 }
 
 func AddTraceId() gin.HandlerFunc {
@@ -37,7 +45,7 @@ func AddTraceId() gin.HandlerFunc {
 		c.Next()
 	}
 }
-func VerifyToken() gin.HandlerFunc {
+func VerifyTokenNormal() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		token := c.GetHeader(string(constant.RequestHeaderKeyToken))
 		if token == "" {
@@ -56,6 +64,18 @@ func VerifyToken() gin.HandlerFunc {
 			_ = c.AbortWithError(constant.TOKEN_INSUFFICENT_PERMISSIONS.Code, fmt.Errorf(constant.TOKEN_INSUFFICENT_PERMISSIONS.Msg))
 			return
 		}
+		c.Next()
+	}
+}
+
+func verifyTokenAdmin() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		c.Next()
+	}
+}
+
+func verifyTokenRoot() gin.HandlerFunc {
+	return func(c *gin.Context) {
 		c.Next()
 	}
 }
