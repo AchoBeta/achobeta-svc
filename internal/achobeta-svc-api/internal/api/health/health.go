@@ -21,7 +21,7 @@ func RegisterRouter(api *Api) {
 		h.GET("/normal/ping", api.Ping2)
 	})
 	route.GetRouter().RegisterRouter(route.LevelAdmin, func(h *gin.RouterGroup) {
-		h.GET("/normal/ping", api.Ping3)
+		h.GET("/admin/ping", api.Ping3)
 	})
 }
 

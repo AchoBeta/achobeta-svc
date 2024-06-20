@@ -7,7 +7,10 @@ import (
 	"achobeta-svc/internal/achobeta-svc-common/pkg/constant"
 	"achobeta-svc/internal/achobeta-svc-common/pkg/web"
 	permissionv1 "achobeta-svc/internal/achobeta-svc-proto/gen/go/authz/permission/v1"
+	"context"
 	"fmt"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
@@ -17,17 +20,25 @@ import (
 var authService = authz.New()
 
 func init() {
-
 	// anonymous
 	route.GetRouter().RegisterMiddleware(route.LevelAnonymous,
 		// middlewares
 		AddTraceId, ErrorHandler)
+
 	// normal
 	route.GetRouter().RegisterMiddleware(route.LevelNormal,
 		// middlewares
 		AddTraceId, ErrorHandler, VerifyTokenNormal)
+
+	// admin
 	route.GetRouter().RegisterMiddleware(route.LevelAdmin,
-		AddTraceId, ErrorHandler)
+		// middlewares
+		AddTraceId, ErrorHandler, verifyTokenAdmin)
+
+	// root
+	route.GetRouter().RegisterMiddleware(route.LevelRoot,
+		// middlewares
+		AddTraceId, ErrorHandler, verifyTokenRoot)
 }
 
 func AddTraceId() gin.HandlerFunc {
@@ -45,25 +56,35 @@ func AddTraceId() gin.HandlerFunc {
 		c.Next()
 	}
 }
+
+func ErrorHandler() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		c.Next()
+		for _, e := range c.Errors {
+			err := e.Err
+			if err != nil {
+				r := web.NewResponse(c)
+				tlog.Infof("error: %+v", c.Keys)
+				r.ErrorTrace(constant.COMMON_FAIL, err.Error(), c.Keys["traceId"].(string))
+				return
+			}
+		}
+	}
+}
+
 func VerifyTokenNormal() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		token := c.GetHeader(string(constant.RequestHeaderKeyToken))
 		if token == "" {
-			_ = c.AbortWithError(constant.TOKEN_IS_NULL.Code, fmt.Errorf(constant.TOKEN_IS_NULL.Msg))
+			_ = c.Error(status.Error(codes.PermissionDenied, constant.TOKEN_IS_NULL.Msg))
 			return
 		}
 
-		resp, err := authService.VerifyToken(c.Request.Context(), &permissionv1.VerifyTokenRequest{
-			Token: token,
-		})
-		if err != nil {
-			_ = c.AbortWithError(constant.TOKEN_IS_INVALID.Code, fmt.Errorf(constant.TOKEN_IS_INVALID.Msg))
+		if err := verifyToken(c.Request.Context(), token, permissionv1.VerifyTokenRequest_ROLE_NORMAL); err != nil {
+			_ = c.Error(status.Error(codes.PermissionDenied, constant.TOKEN_INSUFFICENT_PERMISSIONS.Msg))
 			return
 		}
-		if !resp.Valid {
-			_ = c.AbortWithError(constant.TOKEN_INSUFFICENT_PERMISSIONS.Code, fmt.Errorf(constant.TOKEN_INSUFFICENT_PERMISSIONS.Msg))
-			return
-		}
+
 		c.Next()
 	}
 }
@@ -80,19 +101,19 @@ func verifyTokenRoot() gin.HandlerFunc {
 	}
 }
 
-func ErrorHandler() gin.HandlerFunc {
-	return func(c *gin.Context) {
-		c.Next()
-		for _, e := range c.Errors {
-			err := e.Err
-			if err != nil {
-				r := web.NewResponse(c)
-				tlog.Infof("error: %+v", c.Keys)
-				r.ErrorTrace(constant.COMMON_FAIL, err.Error(), c.Keys["traceId"].(string))
-				return
-			}
-		}
+func verifyToken(ctx context.Context, token string, role permissionv1.VerifyTokenRequest_Role) error {
+	resp, err := authService.VerifyToken(ctx, &permissionv1.VerifyTokenRequest{
+		Role:  role,
+		Token: token,
+	})
+
+	if err != nil {
+		return fmt.Errorf(constant.TOKEN_IS_INVALID.Msg)
 	}
+	if !resp.Valid {
+		return fmt.Errorf(constant.TOKEN_INSUFFICENT_PERMISSIONS.Msg)
+	}
+	return nil
 }
 
 // func CheckToken() gin.HandlerFunc {
