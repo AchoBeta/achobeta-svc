@@ -8,12 +8,10 @@ import (
 	"achobeta-svc/internal/achobeta-svc-common/pkg/web"
 	permissionv1 "achobeta-svc/internal/achobeta-svc-proto/gen/go/authz/permission/v1"
 	"fmt"
-	"google.golang.org/grpc/codes"
-	"google.golang.org/grpc/status"
-
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
 	"go.uber.org/zap"
+	"net/http"
 )
 
 var authService = authz.New()
@@ -73,11 +71,12 @@ func ErrorHandler() gin.HandlerFunc {
 
 func VerifyTokenNormal() gin.HandlerFunc {
 	return func(c *gin.Context) {
+		tlog.Infof("sstttittts")
 		if err := verifyToken(c, permissionv1.VerifyTokenRequest_ROLE_NORMAL); err != nil {
-			_ = c.Error(status.Error(codes.PermissionDenied, constant.TOKEN_INSUFFICENT_PERMISSIONS.Msg))
+			_ = c.AbortWithError(constant.TOKEN_INSUFFICENT_PERMISSIONS.Code, err)
 			return
 		}
-
+		tlog.Infof("sss")
 		c.Next()
 	}
 }
@@ -85,7 +84,7 @@ func VerifyTokenNormal() gin.HandlerFunc {
 func verifyTokenAdmin() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		if err := verifyToken(c, permissionv1.VerifyTokenRequest_ROLE_ADMIN); err != nil {
-			_ = c.Error(status.Error(codes.PermissionDenied, constant.TOKEN_INSUFFICENT_PERMISSIONS.Msg))
+			_ = c.AbortWithError(constant.TOKEN_INSUFFICENT_PERMISSIONS.Code, err)
 			return
 		}
 
@@ -96,7 +95,7 @@ func verifyTokenAdmin() gin.HandlerFunc {
 func verifyTokenRoot() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		if err := verifyToken(c, permissionv1.VerifyTokenRequest_ROLE_ROOT); err != nil {
-			_ = c.Error(status.Error(codes.PermissionDenied, constant.TOKEN_INSUFFICENT_PERMISSIONS.Msg))
+			_ = c.AbortWithError(constant.TOKEN_INSUFFICENT_PERMISSIONS.Code, err)
 			return
 		}
 
@@ -114,11 +113,18 @@ func verifyToken(c *gin.Context, role permissionv1.VerifyTokenRequest_Role) erro
 	resp, err := authService.VerifyToken(ctx, &permissionv1.VerifyTokenRequest{
 		Role:  role,
 		Token: token,
+		Action: func(method string) permissionv1.VerifyTokenRequest_Action {
+			if method == http.MethodGet {
+				return permissionv1.VerifyTokenRequest_ACTION_READ
+			}
+			return permissionv1.VerifyTokenRequest_ACTION_WRITE
+		}(c.Request.Method),
 	})
 
 	if err != nil {
-		return fmt.Errorf(constant.TOKEN_IS_INVALID.Msg)
+		return err
 	}
+
 	if !resp.Valid {
 		return fmt.Errorf(constant.TOKEN_INSUFFICENT_PERMISSIONS.Msg)
 	}

@@ -2,6 +2,7 @@ package health
 
 import (
 	"achobeta-svc/internal/achobeta-svc-api/internal/server/route"
+	"achobeta-svc/internal/achobeta-svc-common/pkg/web"
 	"github.com/gin-gonic/gin"
 )
 
@@ -26,13 +27,16 @@ func RegisterRouter(api *Api) {
 }
 
 func (api *Api) Ping(c *gin.Context) {
-	c.JSON(200, gin.H{"message": "pong anonymous"})
+	r := web.NewResponse(c)
+	r.Success("pong anonymous")
 }
 
 func (api *Api) Ping2(c *gin.Context) {
-	c.JSON(200, gin.H{"message": "pong normal"})
+	r := web.NewResponse(c)
+	r.Success("pong normal")
 }
 
 func (api *Api) Ping3(c *gin.Context) {
-	c.JSON(200, gin.H{"message": "pong admin"})
+	r := web.NewResponse(c)
+	r.Success("pong root")
 }

@@ -63,7 +63,7 @@ func (rm *Router) register(h *gin.Engine) {
 		// 中间件注册
 		for _, middleware := range route.Middlewares {
 			middlewareCount++
-			h.Use(middleware())
+			v.Use(middleware())
 		}
 		// 路由注册
 		for _, r := range route.Path {

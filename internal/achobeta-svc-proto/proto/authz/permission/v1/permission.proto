@@ -64,9 +64,17 @@ message VerifyTokenRequest {
     ROLE_ROOT = 3;
   }
 
+  enum Action {
+    ACTION_UNSPECIFIED = 0;
+    ACTION_READ = 1;
+    ACTION_WRITE = 2;
+  }
+
   string token = 1;
 
   Role role = 2;
+
+  Action action = 3;
 }
 
 // 验证token响应

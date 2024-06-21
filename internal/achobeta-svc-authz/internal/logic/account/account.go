@@ -38,7 +38,7 @@ func (p *Permission) CreateAccount(ctx context.Context, ue *entity.Account) erro
 		if err := trc.Create(&entity.CasbinRule{
 			PType: "g",
 			V0:    fmt.Sprintf("%d", ue.ID),
-			V1:    "normal",
+			V1:    "ab-normal",
 			V2:    "all",
 		}).Error; err != nil {
 			return err
@@ -74,14 +74,15 @@ func (p *Permission) QueryAccount(ctx context.Context, params *entity.Account) (
 	return account, nil
 }
 
-func (p *Permission) CheckToken(ctx context.Context, token string) (bool, error) {
+func (p *Permission) CheckToken(ctx context.Context, token string, role int32, act string) (bool, error) {
 	claims, err := p.casbin.VerifyToken(token)
 	if err != nil {
 		tlog.CtxErrorf(ctx, "verify token error: %v", err)
 		return false, err
 	}
-	//tlog.Infof("claims: %+v", claims)
-	isValid := p.casbin.Check(claims["userId"].(string), claims["domain"].(string), claims["object"].(string), "read")
+
+	isValid := p.casbin.Check(claims["userId"].(string), claims["domain"].(string),
+		fmt.Sprintf("v%d", role), claims["object"].(string), act)
 	return isValid, nil
 }
 
@@ -95,8 +96,8 @@ func (p *Permission) Login(ctx context.Context, req *entity.LoginRequest) (strin
 				"v0 = ?", account.ID).Find(&cb).RowsAffected; row == 0 {
 				return "", fmt.Errorf("no records found for Casbin, please check the data")
 			}
-			// ptype, v0(userid), v1(object), v2(domain), v3(action)
-			token, err := p.casbin.CreateToken(cb.V0, "data", cb.V2, cb.V3)
+			// ptype, v0(userid), v1(object), v2(domain)
+			token, err := p.casbin.CreateToken(cb.V0, "data", cb.V2)
 			_ = p.cache.Set(ctx, token, strconv.Itoa(int(account.ID)), 30*time.Minute)
 			if err != nil {
 				tlog.CtxErrorf(ctx, "create token error: %v", err)

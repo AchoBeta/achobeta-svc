@@ -11,8 +11,8 @@ import (
 )
 
 type Casbin interface {
-	Check(sub, dom, obj, act string) bool
-	CreateToken(sub, dom, obj, act string) (string, error)
+	Check(sub, dom, lvl, obj, act string) bool
+	CreateToken(sub, obj, dom string) (string, error)
 	AddPolicy(sub *entity.CasbinRule) error
 	VerifyToken(token string) (jwt.MapClaims, error)
 }
@@ -54,8 +54,8 @@ func loadDBConfig() *gormadapter.Adapter {
 	return adapter
 }
 
-func (c *impl) Check(sub, dom, obj, act string) bool {
-	ok, _ := c.e.Enforce(sub, dom, obj, act)
+func (c *impl) Check(sub, dom, lvl, obj, act string) bool {
+	ok, _ := c.e.Enforce(sub, dom, lvl, obj, act)
 	return ok
 }
 

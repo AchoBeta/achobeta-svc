@@ -9,13 +9,12 @@ import (
 
 var secretKey = []byte("btk.AchoBeta7VZD1dar")
 
-func (c *impl) CreateToken(sub, obj, dom, act string) (string, error) {
+func (c *impl) CreateToken(sub, obj, dom string) (string, error) {
 	// 创建负载
 	payload := jwt.MapClaims{
 		"userId":  sub,
-		"domain":  dom,
 		"object":  obj,
-		"action":  act,
+		"domain":  dom,
 		"exptime": time.Now().Add(time.Minute * 15).Unix(), // 令牌过期时间为15分钟
 	}
 
