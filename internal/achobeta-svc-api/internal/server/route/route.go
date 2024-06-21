@@ -85,8 +85,5 @@ func (rm *Router) RegisterRouter(level Level, router PathHandler) {
 // @param middleware 中间件
 func (rm *Router) RegisterMiddleware(level Level, middleware ...Middleware) {
 	rm.checkRoute(level)
-
-	for _, m := range middleware {
-		rm.Routes[level].Middlewares = append(rm.Routes[level].Middlewares, m)
-	}
+	rm.Routes[level].Middlewares = append(rm.Routes[level].Middlewares, middleware...)
 }

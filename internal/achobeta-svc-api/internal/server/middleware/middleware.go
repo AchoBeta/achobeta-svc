@@ -7,7 +7,6 @@ import (
 	"achobeta-svc/internal/achobeta-svc-common/pkg/constant"
 	"achobeta-svc/internal/achobeta-svc-common/pkg/web"
 	permissionv1 "achobeta-svc/internal/achobeta-svc-proto/gen/go/authz/permission/v1"
-	"context"
 	"fmt"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
@@ -74,13 +73,7 @@ func ErrorHandler() gin.HandlerFunc {
 
 func VerifyTokenNormal() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		token := c.GetHeader(string(constant.RequestHeaderKeyToken))
-		if token == "" {
-			_ = c.Error(status.Error(codes.PermissionDenied, constant.TOKEN_IS_NULL.Msg))
-			return
-		}
-
-		if err := verifyToken(c.Request.Context(), token, permissionv1.VerifyTokenRequest_ROLE_NORMAL); err != nil {
+		if err := verifyToken(c, permissionv1.VerifyTokenRequest_ROLE_NORMAL); err != nil {
 			_ = c.Error(status.Error(codes.PermissionDenied, constant.TOKEN_INSUFFICENT_PERMISSIONS.Msg))
 			return
 		}
@@ -91,17 +84,33 @@ func VerifyTokenNormal() gin.HandlerFunc {
 
 func verifyTokenAdmin() gin.HandlerFunc {
 	return func(c *gin.Context) {
+		if err := verifyToken(c, permissionv1.VerifyTokenRequest_ROLE_ADMIN); err != nil {
+			_ = c.Error(status.Error(codes.PermissionDenied, constant.TOKEN_INSUFFICENT_PERMISSIONS.Msg))
+			return
+		}
+
 		c.Next()
 	}
 }
 
 func verifyTokenRoot() gin.HandlerFunc {
 	return func(c *gin.Context) {
+		if err := verifyToken(c, permissionv1.VerifyTokenRequest_ROLE_ROOT); err != nil {
+			_ = c.Error(status.Error(codes.PermissionDenied, constant.TOKEN_INSUFFICENT_PERMISSIONS.Msg))
+			return
+		}
+
 		c.Next()
 	}
 }
 
-func verifyToken(ctx context.Context, token string, role permissionv1.VerifyTokenRequest_Role) error {
+func verifyToken(c *gin.Context, role permissionv1.VerifyTokenRequest_Role) error {
+	ctx := c.Request.Context()
+	token := c.GetHeader(string(constant.RequestHeaderKeyToken))
+	if token == "" {
+		return fmt.Errorf(constant.TOKEN_IS_NULL.Msg)
+	}
+
 	resp, err := authService.VerifyToken(ctx, &permissionv1.VerifyTokenRequest{
 		Role:  role,
 		Token: token,
