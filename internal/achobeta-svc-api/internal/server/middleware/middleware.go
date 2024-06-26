@@ -71,7 +71,6 @@ func ErrorHandler() gin.HandlerFunc {
 
 func VerifyTokenNormal() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		tlog.Infof("sstttittts")
 		if err := verifyToken(c, permissionv1.VerifyTokenRequest_ROLE_NORMAL); err != nil {
 			_ = c.AbortWithError(constant.TOKEN_INSUFFICENT_PERMISSIONS.Code, err)
 			return
