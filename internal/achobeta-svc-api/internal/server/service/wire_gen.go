@@ -8,6 +8,7 @@ package service
 
 import (
 	authz3 "achobeta-svc/internal/achobeta-svc-api/internal/api/authz"
+	"achobeta-svc/internal/achobeta-svc-api/internal/api/health"
 	authz2 "achobeta-svc/internal/achobeta-svc-api/internal/logic/authz"
 	"achobeta-svc/internal/achobeta-svc-api/internal/repo/authz"
 )
@@ -20,6 +21,7 @@ func InitServices() *Apis {
 	repo := authz.New()
 	logic := authz2.NewLogic(repo)
 	api := authz3.NewAuthApi(logic)
-	apis := newApiService(api)
+	healthApi := health.NewHealthApi()
+	apis := newApiService(api, healthApi)
 	return apis
 }
