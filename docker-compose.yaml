@@ -21,8 +21,8 @@ services:
     ports:
       - "4397:4397"
     volumes:
-    - ./config:/config 
-    - ./logs:/logs
+     - ./config:/config 
+     - ./logs:/logs
     networks:
       - svc-networks
 

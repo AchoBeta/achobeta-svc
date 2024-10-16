@@ -8,10 +8,13 @@ import (
 	"achobeta-svc/internal/achobeta-svc-common/lib/tlog"
 	"achobeta-svc/internal/achobeta-svc-common/pkg/utils"
 	"context"
+	"errors"
 	"fmt"
 	"strconv"
 	"time"
 
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 	"gorm.io/gorm"
 )
 
@@ -32,20 +35,24 @@ func New(db database.Database, c cache.Cache, cas casbin.Casbin) *Permission {
 // CreateAccount 创建账号
 // 方法内部对密码进行加密, 外层调用无需关心加密逻辑
 func (p *Permission) CreateAccount(ctx context.Context, ue *entity.Account) error {
-	if err := p.database.Transaction(func(trc *gorm.DB) error {
+	if err := p.database.Transaction(ctx, func(trc *gorm.DB) error {
 		ue.ID = uint(utils.GetSnowflakeID())
 		// 创建账号, 设置一个normal的角色
 		if err := trc.Create(&entity.CasbinRule{
 			PType: "g",
 			V0:    fmt.Sprintf("%d", ue.ID),
 			V1:    "ab-normal",
-			V2:    "all",
+			V2:    "achobeta",
 		}).Error; err != nil {
 			return err
 		}
 		ue.Password = hashPassword(ue.Password)
 		if err := trc.Create(&ue).Error; err != nil {
-			return err
+			tlog.CtxErrorf(ctx, "create account error: %v", err)
+			if errors.Is(err, gorm.ErrDuplicatedKey) {
+				return status.Errorf(codes.AlreadyExists, "username or email or phone already exists")
+			}
+			return status.Errorf(codes.Internal, "create account error: %v", err)
 		}
 		return nil
 	}); err != nil {
@@ -80,6 +87,7 @@ func (p *Permission) CheckToken(ctx context.Context, token string, role int32, a
 		tlog.CtxErrorf(ctx, "verify token error: %v", err)
 		return false, err
 	}
+	tlog.CtxInfof(ctx, "%+v\n, role: %d\n, act: %s", claims, role, act)
 
 	isValid := p.casbin.Check(claims["userId"].(string), claims["domain"].(string),
 		fmt.Sprintf("v%d", role), claims["object"].(string), act)

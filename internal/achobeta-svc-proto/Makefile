@@ -8,17 +8,17 @@ clean:
 
 .PHONY: install
 install:
-	go get github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-grpc-gateway
-	go get github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-openapiv2
-	go get google.golang.org/grpc/cmd/protoc-gen-go-grpc
-	go get github.com/envoyproxy/protoc-gen-validate@v1.0.4
-	go get github.com/envoyproxy/protoc-gen-validate/templates/java@v1.0.4
-	go get github.com/lyft/protoc-gen-star/v2@latest
-	go get github.com/iancoleman/strcase@latest
-	go get github.com/bufbuild/buf/cmd/buf@latest
+	go get -u google.golang.org/grpc/cmd/protoc-gen-go-grpc
+	go get -u github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-grpc-gateway
+	go get -u github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-openapiv2
+	go get -u github.com/envoyproxy/protoc-gen-validate
+	go get -u github.com/envoyproxy/protoc-gen-validate/templates/java
+	go get -u github.com/lyft/protoc-gen-star/v2
+	go get -u github.com/iancoleman/strcase
+	go get -u github.com/bufbuild/buf/cmd/buf
 
 	GO111MODULE=on GOBIN=/usr/local/bin \
-		go install \
+		go get -u \
 		github.com/bufbuild/buf/cmd/buf \
 		github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-grpc-gateway \
 		github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-openapiv2 \
