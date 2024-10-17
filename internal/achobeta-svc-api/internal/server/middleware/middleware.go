@@ -8,10 +8,11 @@ import (
 	"achobeta-svc/internal/achobeta-svc-common/pkg/web"
 	permissionv1 "achobeta-svc/internal/achobeta-svc-proto/gen/go/authz/permission/v1"
 	"fmt"
+	"net/http"
+
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
 	"go.uber.org/zap"
-	"net/http"
 )
 
 var authService = authz.New()
@@ -106,7 +107,7 @@ func verifyToken(c *gin.Context, role permissionv1.VerifyTokenRequest_Role) erro
 	ctx := c.Request.Context()
 	token := c.GetHeader(string(constant.RequestHeaderKeyToken))
 	if token == "" {
-		return fmt.Errorf(constant.TOKEN_IS_NULL.Msg)
+		return gin.Error{Err: fmt.Errorf("%s", constant.TOKEN_IS_NULL.Msg)}
 	}
 
 	resp, err := authService.VerifyToken(ctx, &permissionv1.VerifyTokenRequest{
@@ -125,7 +126,7 @@ func verifyToken(c *gin.Context, role permissionv1.VerifyTokenRequest_Role) erro
 	}
 
 	if !resp.Valid {
-		return fmt.Errorf(constant.TOKEN_INSUFFICENT_PERMISSIONS.Msg)
+		return gin.Error{Err: fmt.Errorf("%s", constant.TOKEN_INSUFFICENT_PERMISSIONS.Msg)}
 	}
 	return nil
 }
