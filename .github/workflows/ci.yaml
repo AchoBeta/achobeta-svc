@@ -27,7 +27,7 @@ jobs:
           -H "Content-Type: application/json" \
           | jq -r '.data' > ./internal/achobeta-svc-api/config/config.yaml
         cat ./internal/achobeta-svc-api/config/config.yaml
-        
+
     - name: set authz config
       run: |
         mkdir -p ./internal/achobeta-svc-authz/config
@@ -62,6 +62,7 @@ jobs:
 
     - name: 使用 Docker Compose 构建和推送镜像
       run: |
+        cat ./internal/achobeta-svc-authz/config/config.yaml 
         docker-compose build
         docker-compose push
 
