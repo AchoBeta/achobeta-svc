@@ -9,38 +9,11 @@ on:
     branches:
       - master
 
-jobs:
-  set-config:
+jobs: 
+  build-image:
     runs-on: ubuntu-latest
     env:
       NACOS_URL: ${{ secrets.NACOS_URL }}
-    steps:
-    - name: checkout code
-      uses: actions/checkout@v2
-
-    - name: set api config 
-      run: |
-        mkdir -p ./internal/achobeta-svc-api/config
-        curl --request GET \
-          --url "${NACOS_URL}achobeta-svc-namespace-api-config" \
-          -H "accept: application/json" \
-          -H "Content-Type: application/json" \
-          | jq -r '.data' > ./internal/achobeta-svc-api/config/config.yaml
-        cat ./internal/achobeta-svc-api/config/config.yaml
-
-    - name: set authz config
-      run: |
-        mkdir -p ./internal/achobeta-svc-authz/config
-        curl --request GET \
-          --url "${NACOS_URL}achobeta-svc-namespace-authz-config" \
-          -H "accept: application/json" \
-          -H "Content-Type: application/json" \
-          | jq -r '.data' > ./internal/achobeta-svc-authz/config/config.yaml
-      
-      
-  build-image:
-    runs-on: ubuntu-latest
-    needs: set-config
     steps:
     - name: checkout code
       uses: actions/checkout@v2
@@ -55,14 +28,29 @@ jobs:
         username: ${{ secrets.DOCKER_USERNAME }}
         password: ${{ secrets.DOCKER_PASSWORD }}
 
-    - name: docker compose
+    - name: install docker compose
       run: |
         sudo apt-get update
         sudo apt-get install -y docker-compose
 
-    - name: 使用 Docker Compose 构建和推送镜像
+    - name: install config 
+      run: | 
+        mkdir -p ./internal/achobeta-svc-api/config
+        curl --request GET \
+          --url "${NACOS_URL}achobeta-svc-namespace-api-config" \
+          -H "accept: application/json" \
+          -H "Content-Type: application/json" \
+          | jq -r '.data' > ./internal/achobeta-svc-api/config/config.yaml
+        
+        mkdir -p ./internal/achobeta-svc-authz/config
+        curl --request GET \
+          --url "${NACOS_URL}achobeta-svc-namespace-authz-config" \
+          -H "accept: application/json" \
+          -H "Content-Type: application/json" \
+          | jq -r '.data' > ./internal/achobeta-svc-authz/config/config.yaml
+
+    - name: docker compose build and push
       run: |
-        cat ./internal/achobeta-svc-authz/config/config.yaml 
         docker-compose build
         docker-compose push
 
