@@ -51,7 +51,7 @@ jobs:
 
     - name: docker compose build and push
       run: |
-        make init
+        make install proto build
         docker-compose build
         docker-compose push
 
