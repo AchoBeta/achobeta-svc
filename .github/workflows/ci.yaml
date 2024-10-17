@@ -88,9 +88,10 @@ jobs:
 
     - name: set kubectl
       uses: azure/setup-kubectl@v3
+
     - name: setup kubectl config
       run: |
-        echo "${{ secrets.KUBE_CONFIG }}" > kubeconfig
+        echo "${{ secrets.KUBE_CONFIG }}" | base64 -d > kubeconfig
         chmod 600 kubeconfig
 
     - name: update deployment image
