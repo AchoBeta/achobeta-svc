@@ -67,7 +67,7 @@ jobs:
         pwd 
         make init
         IMAGE_ENV=ghrc.io docker-compose build
-        docker-compose push
+        IMAGE_ENV=ghrc.io docker-compose push
 
     - name: setup k8s context
       uses: azure/k8s-set-context@v1
