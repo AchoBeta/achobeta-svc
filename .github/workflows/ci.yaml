@@ -26,7 +26,8 @@ jobs:
           -H "accept: application/json" \
           -H "Content-Type: application/json" \
           | jq -r '.data' > ./internal/achobeta-svc-api/config/config.yaml
-
+        cat ./internal/achobeta-svc-api/config/config.yaml
+        
     - name: set authz config
       run: |
         mkdir -p ./internal/achobeta-svc-authz/config
