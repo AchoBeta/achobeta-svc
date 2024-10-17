@@ -106,11 +106,9 @@ jobs:
 
     - name: restart deployment
       run: |
-        kubectl --kubeconfig=kubeconfig rollout restart deployment achobeta-svc-authz -n ${NAMESPACE}
-        kubectl --kubeconfig=kubeconfig rollout restart deployment achobeta-svc-api -n ${NAMESPACE}
+        kubectl --kubeconfig=kubeconfig rollout restart deployment achobeta-svc-authz achobeta-svc-api -n ${NAMESPACE}
 
 
     - name: deployment status
       run: |
-        kubectl --kubeconfig=kubeconfig rollout status deployment achobeta-svc-authz -n ${NAMESPACE}
-        kubectl --kubeconfig=kubeconfig rollout status deployment achobeta-svc-api -n ${NAMESPACE}
+        kubectl --kubeconfig=kubeconfig rollout status deployment achobeta-svc-authz achobeta-svc-api -n ${NAMESPACE}
