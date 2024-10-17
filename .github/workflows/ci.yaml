@@ -51,6 +51,7 @@ jobs:
 
     - name: docker compose build and push
       run: |
+        make build
         docker-compose build
         docker-compose push
 
