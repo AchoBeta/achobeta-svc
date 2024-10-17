@@ -43,7 +43,6 @@ jobs:
         username: ${{ github.repository_owner }} # 使用仓库的拥有者名作为用户名
         password: ${{ secrets.GHCR_IO_TOKEN }} # 使用存储在 GitHub Secrets 中的 ghcr.io 的访问令牌
 
-
     - name: install docker compose
       run: |
         sudo apt-get update
