@@ -100,9 +100,27 @@ jobs:
           achobeta-svc-authz=${IMAGE_ENV}/achobeta/achobeta-svc-authz:${IMAGE_TAG} \
           -n ${NAMESPACE}
 
+        kubectl --kubeconfig=kubeconfig patch deployment achobeta-svc-authz \
+            -n ${NAMESPACE} \
+            --type=json \
+            -p='[
+              {"op": "add", "path": "/spec/template/spec/imagePullSecrets", "value": [
+                {"name": "ghcr-secret"}
+              ]}
+            ]'      
+
         kubectl --kubeconfig=kubeconfig set image deployment/achobeta-svc-api \
           achobeta-svc-api=${IMAGE_ENV}/achobeta/achobeta-svc-api:${IMAGE_TAG} \
           -n ${NAMESPACE}
+
+        kubectl --kubeconfig=kubeconfig patch deployment achobeta-svc-api \
+            -n ${NAMESPACE} \
+            --type=json \
+            -p='[
+              {"op": "add", "path": "/spec/template/spec/imagePullSecrets", "value": [
+                {"name": "ghcr-secret"}
+              ]}
+            ]'      
 
     - name: restart deployment
       run: |
