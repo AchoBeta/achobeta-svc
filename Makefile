@@ -21,7 +21,7 @@ define FOREACH_SERVICE
 endef
 # 编译的时候一定要先编译proto，因为其他服务依赖proto
 build: proto dir-build
-
+init: install build
 # 编译proto
 proto:
 	@echo "Compiling proto..."
@@ -36,7 +36,7 @@ dir-build:
 install:
 	@GO111MODULE=on \
         GOBIN=/usr/local/bin \
-    		go install github.com/bufbuild/buf/cmd/buf@v1.33.0
+    		go install github.com/bufbuild/buf/cmd/buf@latest
 	@go install github.com/golangci/golangci-lint/cmd/golangci-lint@latest
 	@$(MAKE) -C $(PROTO_DIR) install
 # 校验检查
@@ -47,7 +47,7 @@ lint:
 
 # docker 启动服务
 docker-run: build
-	@docker-compose up
+	@docker-compose up --build
 
 # 通过参数确定启动的服务
 run: run-$(target)

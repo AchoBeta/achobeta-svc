@@ -1,12 +1,12 @@
 version: v1
 lint:
   use:
-    - DEFAULT
+    - STANDARD
 breaking:
   use:
     - FILE
 deps:
-  - buf.build/bufbuild/protovalidate
+  # - buf.build/bufbuild/protovalidate
   - buf.build/googleapis/googleapis
-  - buf.build/grpc-ecosystem/grpc-gateway
+  # - buf.build/grpc-ecosystem/grpc-gateway
   - buf.build/envoyproxy/protoc-gen-validate

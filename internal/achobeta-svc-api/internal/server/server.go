@@ -2,8 +2,8 @@ package server
 
 import (
 	"achobeta-svc/internal/achobeta-svc-api/config"
-	"achobeta-svc/internal/achobeta-svc-api/internal/server/manager"
 	_ "achobeta-svc/internal/achobeta-svc-api/internal/server/middleware"
+	"achobeta-svc/internal/achobeta-svc-api/internal/server/route"
 	"achobeta-svc/internal/achobeta-svc-api/internal/server/service"
 	"achobeta-svc/internal/achobeta-svc-common/lib/tlog"
 	"fmt"
@@ -19,7 +19,7 @@ func RunServer() {
 	c := config.Get()
 	_ = service.InitServices()
 	g := gin.New()
-	manager.RouteHandler.Register(g)
+	route.Injection(g)
 
 	// run 在最后
 	runServer := fmt.Sprintf("%s:%d", c.Host, c.Port)

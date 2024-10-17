@@ -1,20 +1,42 @@
 package middleware
 
 import (
-	"achobeta-svc/internal/achobeta-svc-api/internal/server/manager"
+	"achobeta-svc/internal/achobeta-svc-api/internal/repo/authz"
+	"achobeta-svc/internal/achobeta-svc-api/internal/server/route"
 	"achobeta-svc/internal/achobeta-svc-common/lib/tlog"
 	"achobeta-svc/internal/achobeta-svc-common/pkg/constant"
 	"achobeta-svc/internal/achobeta-svc-common/pkg/web"
+	permissionv1 "achobeta-svc/internal/achobeta-svc-proto/gen/go/authz/permission/v1"
+	"fmt"
+	"net/http"
 
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
 	"go.uber.org/zap"
 )
 
+var authService = authz.New()
+
 func init() {
-	manager.RouteHandler.RegisterMiddleware(manager.LEVEL_GLOBAL, AddTraceId, false)
-	manager.RouteHandler.RegisterMiddleware(manager.LEVEL_GLOBAL, ErrorHandler, false)
-	// web.RouteHandler.RegisterMiddleware(web.LEVEL_V1, CheckToken, true)
+	// anonymous
+	route.GetRouter().RegisterMiddleware(route.LevelAnonymous,
+		// middlewares
+		AddTraceId, ErrorHandler)
+
+	// normal
+	route.GetRouter().RegisterMiddleware(route.LevelNormal,
+		// middlewares
+		AddTraceId, ErrorHandler, VerifyTokenNormal)
+
+	// admin
+	route.GetRouter().RegisterMiddleware(route.LevelAdmin,
+		// middlewares
+		AddTraceId, ErrorHandler, verifyTokenAdmin)
+
+	// root
+	route.GetRouter().RegisterMiddleware(route.LevelRoot,
+		// middlewares
+		AddTraceId, ErrorHandler, verifyTokenRoot)
 }
 
 func AddTraceId() gin.HandlerFunc {
@@ -46,6 +68,67 @@ func ErrorHandler() gin.HandlerFunc {
 			}
 		}
 	}
+}
+
+func VerifyTokenNormal() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		if err := verifyToken(c, permissionv1.VerifyTokenRequest_ROLE_NORMAL); err != nil {
+			_ = c.AbortWithError(constant.TOKEN_INSUFFICENT_PERMISSIONS.Code, err)
+			return
+		}
+		tlog.Infof("sss")
+		c.Next()
+	}
+}
+
+func verifyTokenAdmin() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		if err := verifyToken(c, permissionv1.VerifyTokenRequest_ROLE_ADMIN); err != nil {
+			_ = c.AbortWithError(constant.TOKEN_INSUFFICENT_PERMISSIONS.Code, err)
+			return
+		}
+
+		c.Next()
+	}
+}
+
+func verifyTokenRoot() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		if err := verifyToken(c, permissionv1.VerifyTokenRequest_ROLE_ROOT); err != nil {
+			_ = c.AbortWithError(constant.TOKEN_INSUFFICENT_PERMISSIONS.Code, err)
+			return
+		}
+
+		c.Next()
+	}
+}
+
+func verifyToken(c *gin.Context, role permissionv1.VerifyTokenRequest_Role) error {
+	ctx := c.Request.Context()
+	token := c.GetHeader(string(constant.RequestHeaderKeyToken))
+	if token == "" {
+		return gin.Error{Err: fmt.Errorf("%s", constant.TOKEN_IS_NULL.Msg)}
+	}
+
+	resp, err := authService.VerifyToken(ctx, &permissionv1.VerifyTokenRequest{
+		Role:  role,
+		Token: token,
+		Action: func(method string) permissionv1.VerifyTokenRequest_Action {
+			if method == http.MethodGet {
+				return permissionv1.VerifyTokenRequest_ACTION_READ
+			}
+			return permissionv1.VerifyTokenRequest_ACTION_WRITE
+		}(c.Request.Method),
+	})
+
+	if err != nil {
+		return err
+	}
+
+	if !resp.Valid {
+		return gin.Error{Err: fmt.Errorf("%s", constant.TOKEN_INSUFFICENT_PERMISSIONS.Msg)}
+	}
+	return nil
 }
 
 // func CheckToken() gin.HandlerFunc {

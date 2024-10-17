@@ -25,6 +25,7 @@ func InitDatabase() {
 		},
 	), &gorm.Config{
 		DisableAutomaticPing: true,
+		TranslateError:       true,
 		Logger: logger.New(log.New(os.Stdout, "\r\n", log.LstdFlags), // io writer
 			logger.Config{
 				SlowThreshold:             time.Second,   // Slow SQL threshold

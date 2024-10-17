@@ -2,6 +2,7 @@ package database
 
 import (
 	"achobeta-svc/internal/achobeta-svc-authz/config"
+	"context"
 	"database/sql"
 
 	"gorm.io/gorm"
@@ -10,10 +11,10 @@ import (
 // Database Cache is an interface
 type Database interface {
 	Get() *gorm.DB
-	Create(model any) (*sql.Rows, error)
-	Update(model any) (*sql.Rows, error)
-	Delete(model any) (*sql.Rows, error)
-	Transaction(func(trc *gorm.DB) error) error
+	Create(ctx context.Context, model any) (*sql.Rows, error)
+	Update(ctx context.Context, model any) (*sql.Rows, error)
+	Delete(ctx context.Context, model any) (*sql.Rows, error)
+	Transaction(ctx context.Context, fn func(trc *gorm.DB) error) error
 }
 
 type impl struct {
@@ -31,17 +32,17 @@ func (i *impl) Get() *gorm.DB {
 	return i.mysql_
 }
 
-func (i *impl) Create(model any) (*sql.Rows, error) {
-	return i.mysql_.Debug().Create(model).Rows()
+func (i *impl) Create(ctx context.Context, model any) (*sql.Rows, error) {
+	return i.mysql_.Debug().WithContext(ctx).Create(model).Rows()
 }
 
-func (i *impl) Update(model any) (*sql.Rows, error) {
-	return i.mysql_.Debug().Updates(model).Rows()
+func (i *impl) Update(ctx context.Context, model any) (*sql.Rows, error) {
+	return i.mysql_.Debug().WithContext(ctx).Updates(model).Rows()
 }
 
-func (i *impl) Delete(model any) (*sql.Rows, error) {
-	return i.mysql_.Debug().Delete(model).Rows()
+func (i *impl) Delete(ctx context.Context, model any) (*sql.Rows, error) {
+	return i.mysql_.Debug().WithContext(ctx).Delete(model).Rows()
 }
-func (i *impl) Transaction(fn func(trc *gorm.DB) error) error {
-	return i.mysql_.Debug().Transaction(fn)
+func (i *impl) Transaction(ctx context.Context, fn func(trc *gorm.DB) error) error {
+	return i.mysql_.Debug().WithContext(ctx).Transaction(fn)
 }
