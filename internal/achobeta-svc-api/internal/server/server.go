@@ -23,7 +23,7 @@ func RunServer() {
 
 	// run 在最后
 	runServer := fmt.Sprintf("%s:%d", c.Host, c.Port)
-	tlog.Infof("http api server listen on %s", runServer)
+	tlog.Infof("gateway server listen on %s", runServer)
 	err := g.Run(runServer)
 	if err != nil {
 		tlog.Errorf("Listen error: %v", err)

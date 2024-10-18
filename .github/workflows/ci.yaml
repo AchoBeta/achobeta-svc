@@ -1,0 +1,132 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches:
+      - master
+      - feature-deploy-ci
+  pull_request:
+    branches:
+      - master
+env:
+  IMAGE_TAG: ${{ github.sha }}
+  IMAGE_ENV: ghcr.io
+  
+jobs: 
+  build-image:
+    runs-on: ubuntu-latest
+    env:
+      NACOS_URL: ${{ secrets.NACOS_URL }}
+    steps:
+    - name: checkout code
+      uses: actions/checkout@v2
+
+    - name: setup Go environment
+      uses: actions/setup-go@v4
+      with:
+        go-version: '1.23' 
+
+    - name: setup docker buildx
+      uses: docker/setup-buildx-action@v1
+
+    # - name: login docker hub
+    #   uses: docker/login-action@v1
+    #   with:
+    #     registry: "ccr.ccs.tencentyun.com"
+    #     username: ${{ secrets.DOCKER_USERNAME }}
+    #     password: ${{ secrets.DOCKER_PASSWORD }}
+
+    - name: login ghcr.io 
+      uses: docker/login-action@v2
+      with:
+        registry: ghcr.io
+        username: ${{ github.repository_owner }} # 使用仓库的拥有者名作为用户名
+        password: ${{ secrets.GHCR_IO_TOKEN }} # 使用存储在 GitHub Secrets 中的 ghcr.io 的访问令牌
+
+    - name: install docker compose
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y docker-compose
+
+    - name: install config 
+      run: | 
+        mkdir -p ./internal/achobeta-svc-api/config
+        curl --request GET \
+          --url "${NACOS_URL}achobeta-svc-namespace-api-config" \
+          -H "accept: application/json" \
+          -H "Content-Type: application/json" \
+          | jq -r '.data' > ./internal/achobeta-svc-api/config/config.yaml
+        
+        mkdir -p ./internal/achobeta-svc-authz/config
+        curl --request GET \
+          --url "${NACOS_URL}achobeta-svc-namespace-authz-config" \
+          -H "accept: application/json" \
+          -H "Content-Type: application/json" \
+          | jq -r '.data' > ./internal/achobeta-svc-authz/config/config.yaml
+
+    - name: docker compose build and push
+      run: |
+        make init
+        IMAGE_ENV=${{ env.IMAGE_ENV }} IMAGE_TAG=${{ env.IMAGE_TAG }} docker-compose build
+        IMAGE_ENV=${{ env.IMAGE_ENV }} IMAGE_TAG=${{ env.IMAGE_TAG }} docker-compose push
+
+    - name: setup k8s context
+      uses: azure/k8s-set-context@v1
+      with:
+        kubeconfig: ${{ secrets.KUBE_CONFIG }}
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: build-image
+    env:
+      NAMESPACE: achobeta-svc
+
+    steps:
+    - name: checkout code
+      uses: actions/checkout@v2
+
+    - name: set kubectl
+      uses: azure/setup-kubectl@v3
+
+    - name: setup kubectl config
+      run: |
+        echo "${{ secrets.KUBE_CONFIG }}" | base64 -d > kubeconfig
+        chmod 600 kubeconfig
+
+    - name: update deployment image
+      run: |
+        kubectl --kubeconfig=kubeconfig set image deployment/achobeta-svc-authz \
+          achobeta-svc-authz=${IMAGE_ENV}/achobeta/achobeta-svc-authz:${IMAGE_TAG} \
+          -n ${NAMESPACE}
+
+        kubectl --kubeconfig=kubeconfig patch deployment achobeta-svc-authz \
+            -n ${NAMESPACE} \
+            --type=json \
+            -p='[
+              {"op": "add", "path": "/spec/template/spec/imagePullSecrets", "value": [
+                {"name": "ghcr-secret"}
+              ]}
+            ]'      
+
+        kubectl --kubeconfig=kubeconfig set image deployment/achobeta-svc-api \
+          achobeta-svc-api=${IMAGE_ENV}/achobeta/achobeta-svc-api:${IMAGE_TAG} \
+          -n ${NAMESPACE}
+
+        kubectl --kubeconfig=kubeconfig patch deployment achobeta-svc-api \
+            -n ${NAMESPACE} \
+            --type=json \
+            -p='[
+              {"op": "add", "path": "/spec/template/spec/imagePullSecrets", "value": [
+                {"name": "ghcr-secret"}
+              ]}
+            ]'      
+
+    - name: restart deployment
+      run: |
+        kubectl --kubeconfig=kubeconfig rollout restart deployment achobeta-svc-authz achobeta-svc-api -n ${NAMESPACE}
+
+
+    - name: deployment status
+      run: |
+        kubectl --kubeconfig=kubeconfig rollout status deployment achobeta-svc-authz --timeout=300s -n ${NAMESPACE}
+        kubectl --kubeconfig=kubeconfig rollout status deployment achobeta-svc-api --timeout=300s -n ${NAMESPACE}

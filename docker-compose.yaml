@@ -4,7 +4,7 @@ services:
     build:
         context: .
         dockerfile: ./internal/achobeta-svc-authz/Dockerfile
-    image: ccr.ccs.tencentyun.com/achobeta/achobeta-svc-authz:latest
+    image: ${IMAGE_ENV:-ccr.ccs.tencentyun.com}/achobeta/achobeta-svc-authz:${IMAGE_TAG:-latest}
     ports:
       - "4396:4396"
     volumes:
@@ -17,7 +17,7 @@ services:
     build: 
       context: .
       dockerfile: ./internal/achobeta-svc-api/Dockerfile
-    image: ccr.ccs.tencentyun.com/achobeta/achobeta-svc-api:latest
+    image: ${IMAGE_ENV:-ccr.ccs.tencentyun.com}/achobeta/achobeta-svc-api:${IMAGE_TAG:-latest}
     ports:
       - "4397:4397"
     volumes:
