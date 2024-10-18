@@ -128,4 +128,5 @@ jobs:
 
     - name: deployment status
       run: |
-        kubectl --kubeconfig=kubeconfig rollout status deployment achobeta-svc-authz achobeta-svc-api -n ${NAMESPACE}
+        kubectl --kubeconfig=kubeconfig rollout status deployment achobeta-svc-authz --timeout=300s -n ${NAMESPACE}
+        kubectl --kubeconfig=kubeconfig rollout status deployment achobeta-svc-api --timeout=300s -n ${NAMESPACE}
