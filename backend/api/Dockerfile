@@ -1,0 +1,13 @@
+FROM golang:1.23 AS builder
+
+ENV GO111MODULE=on \
+    GOPROXY=https://goproxy.cn,direct \
+    GIN_MODE=release
+    
+WORKDIR /app
+COPY . .
+COPY ./backend/api/svc-api-server .
+COPY ./backend/api/config/config.yaml ./config/api/config.yaml
+EXPOSE 4397
+# run the binary
+ENTRYPOINT ["./svc-api-server", "-config", "./config/api/config.yaml"]
