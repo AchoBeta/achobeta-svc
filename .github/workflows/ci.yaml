@@ -50,19 +50,19 @@ jobs:
 
     - name: install config 
       run: | 
-        mkdir -p ./internal/achobeta-svc-api/config
+        mkdir -p ./backend/api/config
         curl --request GET \
           --url "${NACOS_URL}achobeta-svc-namespace-api-config" \
           -H "accept: application/json" \
           -H "Content-Type: application/json" \
-          | jq -r '.data' > ./internal/achobeta-svc-api/config/config.yaml
+          | jq -r '.data' > ./backend/api/config/config.yaml
         
-        mkdir -p ./internal/achobeta-svc-authz/config
+        mkdir -p ./backend/authz/config
         curl --request GET \
           --url "${NACOS_URL}achobeta-svc-namespace-authz-config" \
           -H "accept: application/json" \
           -H "Content-Type: application/json" \
-          | jq -r '.data' > ./internal/achobeta-svc-authz/config/config.yaml
+          | jq -r '.data' > ./backend/authz/config/config.yaml
 
     - name: docker compose build and push
       run: |

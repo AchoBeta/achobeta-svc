@@ -1,8 +1,8 @@
 CURRENT_DIR := .
-INTERNAL_DIR := $(CURRENT_DIR)/internal
+INTERNAL_DIR := $(CURRENT_DIR)/backend
 # sub dirs
-COMMON_DIR := $(INTERNAL_DIR)/achobeta-svc-common
-PROTO_DIR := $(INTERNAL_DIR)/achobeta-svc-proto
+COMMON_DIR := $(INTERNAL_DIR)/common
+PROTO_DIR := $(INTERNAL_DIR)/proto
 # exclude dirs
 EXCLUDE_DIRS := $(COMMON_DIR) $(PROTO_DIR)
 # service dirs, exclude common and proto
@@ -48,11 +48,3 @@ lint:
 # docker 启动服务
 docker-run: build
 	@docker-compose up --build
-
-# 通过参数确定启动的服务
-run: run-$(target)
-
-run-api:
-	@$(MAKE) -C $(INTERNAL_DIR)/achobeta-svc-api run
-run-authz:
-	@$(MAKE) -C $(INTERNAL_DIR)/achobeta-svc-authz run
